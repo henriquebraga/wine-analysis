@@ -143,9 +143,9 @@ Com exceção do campo `vinhos` que é uma variável categórica, todos os campo
 Isso nos mostra também que a quantidade de vinhos brancos é muito maior que vinho tinto.
 
 
-## Desvio Padrão e Outliers
+### Desvio Padrão e Outliers
 
-## Correlações
+### Correlações
 
 ## Dividindo o conjunto de dados: Vinhos brancos e Vinhos tintos
 
@@ -154,22 +154,24 @@ Vamos utilizar as observações obtidas em nossa análise inicial e verificar se
 
 Primeiramente, criaremos um conjunto de dados de vinhos vermelhos.
 
-```{r split_wine_datasets_red}
+```{r filter_wine_datasets_red}
 wines_dt.red_wines <- wines_dt %>% filter(Vinho == 'RED')
 wines_dt.red_wines
 ```
 
 Agora, o conjunto de dados somente com os vinhos brancos.
 
-```{r summary_wine_datasets_red}
+```{r filter_wine_datasets_white}
 wines_dt.white_wines <- wines_dt %>% filter(Vinho == 'WHITE')
 wines_dt.white_wines
 ```
 
-
 ```{r summary_wine_datasets_white}
-wines_dt.white_wines <- wines_dt %>% filter(Vinho == 'WHITE')
-wines_dt.white_wines
+summary(wines_dt.white_wines)
+```
+
+```{r summary_wine_datasets_red}
+summary(wines_dt.red_wines)
 ```
 
 Vamos obter os maiores valores dos campos do dataset por tipo de vinho.
@@ -187,3 +189,69 @@ getMaxValueByWineType(wines_dt)
 Podemos concluir que existe uma grande diferença nos campos para cada tipo de vinho. A acidez, por exemplo, varia praticamente o dobro.
 
 Os maiores valores para qualidade, álcool, densidade, pH, acidez não variaram muito.
+
+### Distribuição do dados por tipo de vinho
+
+Com o dataset separado, vamos verificar se a distribuição de dados diferem entre um e outro.
+
+```{r data_distribution_volatileacidity}
+plot_ly(x = wines_dt.red_wines$volatileacidity, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$volatileacidity, type = 'histogram')
+
+```
+
+```{r data_distribution_citricacid_per_wine_type}
+plot_ly(x = wines_dt.red_wines$citricacid, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$citricacid, type = 'histogram')
+```
+
+```{r data_distribution_residualsugar_per_wine_type}
+plot_ly(x = wines_dt.red_wines$residualsugar, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$residualsugar, type = 'histogram')
+
+```
+
+```{r data_distribution_chlorides_per_wine_type}
+plot_ly(x = wines_dt.red_wines$chlorides, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$chlorides, type = 'histogram')
+```
+
+```{r data_distribution_freesulfurdioxide_per_wine_type}
+plot_ly(x = wines_dt.red_wines$freesulfurdioxide, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$freesulfurdioxide, type = 'histogram')
+```
+
+```{r data_distribution_totalsulfurdioxide_per_wine_type}
+plot_ly(x = wines_dt.red_wines$totalsulfurdioxide, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$totalsulfurdioxide, type = 'histogram')
+```
+
+```{r data_distribution_density_per_wine_type}
+plot_ly(x = wines_dt.red_wines$density, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$density, type = 'histogram')
+```
+
+```{r data_distribution_ph_per_wine_type}
+plot_ly(x = wines_dt.red_wines$pH, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$pH, type = 'histogram')
+```
+
+```{r data_distribution_sulphates_per_wine_type}
+plot_ly(x = wines_dt.red_wines$sulphates, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$sulphates, type = 'histogram')
+```
+
+```{r data_distribution_alcohol_per_wine_type}
+plot_ly(x = wines_dt.red_wines$alcohol, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$alcohol, type = 'histogram')
+```
+
+```{r data_distribution_quality_per_wine_type}
+plot_ly(x = wines_dt.red_wines$quality, type = 'histogram')
+plot_ly(x = wines_dt.white_wines$quality, type = 'histogram')
+```
+
+```{r data_distribution_quality}
+plot_ly(x = wines_dt$Vinho, type = 'histogram')
+```
+
