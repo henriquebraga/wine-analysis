@@ -1,0 +1,169 @@
+---
+title: "descriptive_analysis_wine"
+author: "Henrique Braga"
+date: "September 2, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Instale os pacotes para poder realizar a análise descritiva:
+
+```{r install_packages}
+install.packages('plotly')
+```
+## Analise: Estatistica Descritiva
+
+### Carregando o dataset 
+
+Primeiramente, precisamos carregar nosso conjunto de dados
+
+```{r load_dataset}
+wines_dt <- read.csv2("wines.csv", row.names=1)
+```
+
+
+### Uma primeira olhada no dataset
+
+#### Amostras
+
+Verificando alguns exemplos (10 amostras) de amostra para saber quais colunas existem em nosso dataset.
+
+```{r dataset_samples}
+head(wines_dt, n=10)
+```
+
+#### Visão Geral
+Vamos dar uma primeira olhada geral em nosso dados.
+
+```{r summary_dataset}
+summary(wines_dt)
+```
+
+```{r summary_dataset}
+summary(wines_dt)
+```
+
+Podemos já verificar alguns comportamentos:
+
+* Existe uma divisão entre vinhos tinto e branco;
+* O campo `redisualsugar` possui um grande desvio padrao se comparado aos outros campos. (Isso pode ser visto entre a diferenca da média para a mediana);
+* Aparentemente há alguns outliers em boa parte dos campos do dataset (Isso pode ser visto pelos quartis);
+
+Vamos guardar essas informações para outro momento e continuar nossa análise.
+
+### Verificando valores nulos
+
+Antes de prosseguirmos com a análise, precisamos verificar se existem registros sem dados.
+
+```{r fix_wines}
+sapply(wines_dt, function(x)all(is.na(x)))
+```
+
+Como resultado retornado para todas as colunas foi `FALSE`, averiguamos que não existem valores nulos em nosso data set.
+
+### Distribuição dos dados
+
+Vamos agora analisar a distribuição dos dados de cada coluna.
+
+```{r data_distribution_fixedacididty}
+library(plotly)
+plot_ly(x = wines_dt$fixedacidity, type = 'histogram')
+```
+
+```{r data_distribution_volatileacidity}
+plot_ly(x = wines_dt$volatileacidity, type = 'histogram')
+```
+
+```{r data_distribution_citricacid}
+plot_ly(x = wines_dt$citricacid, type = 'histogram')
+```
+
+```{r data_distribution_residualsugar}
+plot_ly(x = wines_dt$residualsugar, type = 'histogram')
+```
+
+```{r data_distribution_chlorides}
+plot_ly(x = wines_dt$chlorides, type = 'histogram')
+```
+
+```{r data_distribution_freesulfurdioxide}
+plot_ly(x = wines_dt$freesulfurdioxide, type = 'histogram')
+```
+
+```{r data_distribution_totalsulfurdioxide}
+plot_ly(x = wines_dt$totalsulfurdioxide, type = 'histogram')
+```
+
+```{r data_distribution_density}
+plot_ly(x = wines_dt$density, type = 'histogram')
+```
+
+```{r data_distribution_ph}
+plot_ly(x = wines_dt$pH, type = 'histogram')
+```
+
+```{r data_distribution_ph}
+plot_ly(x = wines_dt$pH, type = 'histogram')
+```
+
+```{r data_distribution_sulphates}
+plot_ly(x = wines_dt$sulphates, type = 'histogram')
+```
+
+```{r data_distribution_sulphates}
+plot_ly(x = wines_dt$sulphates, type = 'histogram')
+```
+
+```{r data_distribution_alcohol}
+plot_ly(x = wines_dt$alcohol, type = 'histogram')
+```
+
+```{r data_distribution_quality}
+plot_ly(x = wines_dt$quality, type = 'histogram')
+```
+
+```{r data_distribution_quality}
+plot_ly(x = wines_dt$Vinho, type = 'histogram')
+```
+
+Com exceção do campo `vinhos` que é uma variável categórica, todos os campos numéricos seguem uma distribuição normal.
+
+Isso nos mostra também que a quantidade de vinhos brancos é muito maior que vinho tinto.
+
+
+## Desvio Padrão e Outliers
+
+## Correlações
+
+## Dividindo o conjunto de dados: Vinhos brancos e Vinhos tintos
+
+Vamos utilizar as observações obtidas em nossa análise inicial e verificar se há uma discrepância entre os tipos de vinho.
+
+```{r split_wine_datasets}
+```
+
+
+Maiores valores de álcool por tipo de vinho (tinto ou branco);
+
+```{r aggregate_wines_dt_alcohol}
+aggregate(wines_dt$alcohol, by = list(wines_dt$Vinho), FUN=mean, na.rm = TRUE)
+```
+
+Vamos obter os maiores valores dos campos do dataset por tipo de vinho.
+
+```{r aggregate_wines_dt}
+getMaxValueByWineType <- function(dataset) {
+  columns <- colnames(wines_dt)[1:12]
+  for (columnName in columns[1:12]){
+  print(aggregate(wines_dt[columnName], by = list(wines_dt$Vinho), FUN=mean, na.rm = TRUE))
+  }  
+}
+getMaxValueByWineType(wines_dt)
+```
+
+Podemos notar que existe uma grande diferença nos campos para cada tipo de vinho. A acidez, por exemplo, varia praticamente o dobro.
+
+Os maiores valores para qualidade, álcool, densidade, pH, acidez não variaram muito.
