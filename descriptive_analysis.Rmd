@@ -15,13 +15,15 @@ knitr::opts_chunk$set(echo = TRUE)
 Instale os pacotes para poder realizar a análise descritiva:
 
 ```{r install_packages}
-#install.packages('plotly')
 install.packages('dplyr')
+install.packages('plotly')
 ```
 
 ## Carregar bibliotecas
-
+```{r load_libraries}
 library(plotly)
+library(dplyr)
+```
 
 ## Analise: Estatistica Descritiva
 
@@ -32,7 +34,6 @@ Primeiramente, precisamos carregar nosso conjunto de dados
 ```{r load_dataset}
 wines_dt <- read.csv2("wines.csv", row.names=1)
 ```
-
 
 ### Uma primeira olhada no dataset
 
@@ -58,7 +59,7 @@ summary(wines_dt)
 Podemos já verificar alguns comportamentos:
 
 * Existe uma divisão entre vinhos tinto e branco;
-* O campo `redisualsugar` possui um grande desvio padrao se comparado aos outros campos. (Isso pode ser visto entre a diferenca da média para a mediana);
+* O campo `redis ualsugar` possui um grande desvio padrao se comparado aos outros campos. (Isso pode ser visto entre a diferenca da média para a mediana);
 * Aparentemente há alguns outliers em boa parte dos campos do dataset (Isso pode ser visto pelos quartis);
 
 Vamos guardar essas informações para outro momento e continuar nossa análise.
@@ -151,16 +152,24 @@ Isso nos mostra também que a quantidade de vinhos brancos é muito maior que vi
 Vamos utilizar as observações obtidas em nossa análise inicial e verificar se há uma discrepância entre os tipos de vinho.
 
 
+Primeiramente, criaremos um conjunto de dados de vinhos vermelhos.
 
-```{r split_wine_datasets}
-filter()
+```{r split_wine_datasets_red}
+wines_dt.red_wines <- wines_dt %>% filter(Vinho == 'RED')
+wines_dt.red_wines
+```
+
+Agora, o conjunto de dados somente com os vinhos brancos.
+
+```{r summary_wine_datasets_red}
+wines_dt.white_wines <- wines_dt %>% filter(Vinho == 'WHITE')
+wines_dt.white_wines
 ```
 
 
-Maiores valores de álcool por tipo de vinho (tinto ou branco);
-
-```{r aggregate_wines_dt_alcohol}
-aggregate(wines_dt$alcohol, by = list(wines_dt$Vinho), FUN=mean, na.rm = TRUE)
+```{r summary_wine_datasets_white}
+wines_dt.white_wines <- wines_dt %>% filter(Vinho == 'WHITE')
+wines_dt.white_wines
 ```
 
 Vamos obter os maiores valores dos campos do dataset por tipo de vinho.
@@ -175,6 +184,6 @@ getMaxValueByWineType <- function(dataset) {
 getMaxValueByWineType(wines_dt)
 ```
 
-Podemos notar que existe uma grande diferença nos campos para cada tipo de vinho. A acidez, por exemplo, varia praticamente o dobro.
+Podemos concluir que existe uma grande diferença nos campos para cada tipo de vinho. A acidez, por exemplo, varia praticamente o dobro.
 
 Os maiores valores para qualidade, álcool, densidade, pH, acidez não variaram muito.
