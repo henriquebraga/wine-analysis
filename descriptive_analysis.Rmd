@@ -9,11 +9,20 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+## Instalacao dos pacotes
+
 Instale os pacotes para poder realizar a análise descritiva:
 
 ```{r install_packages}
-install.packages('plotly')
+#install.packages('plotly')
+install.packages('dplyr')
 ```
+
+## Carregar bibliotecas
+
+library(plotly)
+
 ## Analise: Estatistica Descritiva
 
 ### Carregando o dataset 
@@ -69,7 +78,6 @@ Como resultado retornado para todas as colunas foi `FALSE`, averiguamos que não
 Vamos agora analisar a distribuição dos dados de cada coluna.
 
 ```{r data_distribution_fixedacididty}
-library(plotly)
 plot_ly(x = wines_dt$fixedacidity, type = 'histogram')
 ```
 
@@ -142,7 +150,10 @@ Isso nos mostra também que a quantidade de vinhos brancos é muito maior que vi
 
 Vamos utilizar as observações obtidas em nossa análise inicial e verificar se há uma discrepância entre os tipos de vinho.
 
+
+
 ```{r split_wine_datasets}
+filter()
 ```
 
 
