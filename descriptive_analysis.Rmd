@@ -142,6 +142,39 @@ Com exceção do campo `vinhos` que é uma variável categórica, todos os campo
 
 Isso nos mostra também que a quantidade de vinhos brancos é muito maior que vinho tinto.
 
+No tópico a seguir, vamos confirmar esse comportamento, analisando as medidas centrais do conjunto de dados: media e mediana.
+
+### Média e Mediana: Vinhos Tintos x Vinhos Brancos
+
+
+```{r data_mean_dt_wine}
+aggregate(wines_dt[,-13],
+          by = list(wines_dt$Vinho),
+          FUN = mean)
+```
+
+```{r data_median_dt_wine}
+aggregate(wines_dt[,-13],
+          by = list(wines_dt$Vinho),
+          FUN = median)
+```
+
+Podemos observar algumas diferenças interessantes entre os mesmos: 
+
+* A acidez para vinhos tintos é maior;
+* A volatidade de ácido é duas vezes maior em vinhos tintos;
+* O açúcar é maior para vinhos brancos;
+* O dióxido de carbono é mais que o dobro nos vinhos brancos;
+* Os outros campos são similares.
+
+
+Analisando a assimetria (diferença entre média e mediana) e conforme verificamos nos histogramas acima, as colunas de vinhos seguem uma distribuição normal. Vamos fazer um plot das maiores diferenças entre média e mediana. O campo que teve uma diferença mais significativa foi o dióxido de carbono.
+
+```{r median_mean_hist}
+plot_ly(x = wines_dt$freesulfurdioxide, type = 'histogram')
+```
+
+Podemos observar que apesar do desenho ser similar à uma distribuição normal, isso se deu pois mais à esquerda, temos uma grande concentração de amostras.
 
 ### Desvio Padrão e Outliers
 
@@ -255,3 +288,14 @@ plot_ly(x = wines_dt.white_wines$quality, type = 'histogram')
 plot_ly(x = wines_dt$Vinho, type = 'histogram')
 ```
 
+
+### Transformação da qualidade
+
+Vamos transformar a variável quantitativa em qualitativa.
+
+Primeiramente vamos entender a escala.
+
+
+```{r quality_scale}
+s
+```
