@@ -1,4 +1,4 @@
----
+--- 
 title: "descriptive_analysis_wine"
 author: "Henrique Braga"
 date: "September 2, 2018"
@@ -146,7 +146,6 @@ No tópico a seguir, vamos confirmar esse comportamento, analisando as medidas c
 
 ### Média e Mediana: Vinhos Tintos x Vinhos Brancos
 
-
 ```{r data_mean_dt_wine}
 aggregate(wines_dt[,-13],
           by = list(wines_dt$Vinho),
@@ -177,6 +176,37 @@ plot_ly(x = wines_dt$freesulfurdioxide, type = 'histogram')
 Podemos observar que apesar do desenho ser similar à uma distribuição normal, isso se deu pois mais à esquerda, temos uma grande concentração de amostras.
 
 ### Desvio Padrão e Outliers
+
+Vamos verificar agora quem são os outliers por coluna em nosso conjunto de dados por meio de boxplots.
+
+```{r boxplot_outliers}
+boxplot(wines_dt$quality, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Qualidade")
+
+boxplot(wines_dt$density, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Densidade")
+
+boxplot(wines_dt$sulphates, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Sulfatos")
+
+boxplot(wines_dt$chlorides, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Cloreto")
+
+boxplot(wines_dt$volatileacidity, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Volatilidade do ácido")
+
+boxplot(wines_dt$citricacid, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Ácido Cítrico")
+
+boxplot(wines_dt$residualsugar, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Açúcar")
+
+boxplot(wines_dt$pH, data=wines_dt, col=(c("blue","darkgreen")),
+  main="pH", xlab="Sulfatos")
+
+```
+
+Podemos observar pelo boxplot que com exceção de qualidade e denpsidade, todos os campos possuem uma quantidade alta de outliers. Posteriormente, dividiremos o conjunto de dados para verificar se os tipos de vinho (denotado pelo campo VINHO) devem ser agrupados e tratados separadamente.
 
 ### Correlações
 
@@ -230,7 +260,6 @@ Com o dataset separado, vamos verificar se a distribuição de dados diferem ent
 ```{r data_distribution_volatileacidity}
 plot_ly(x = wines_dt.red_wines$volatileacidity, type = 'histogram')
 plot_ly(x = wines_dt.white_wines$volatileacidity, type = 'histogram')
-
 ```
 
 ```{r data_distribution_citricacid_per_wine_type}
@@ -289,13 +318,9 @@ plot_ly(x = wines_dt$Vinho, type = 'histogram')
 ```
 
 
-### Transformação da qualidade
-
-Vamos transformar a variável quantitativa em qualitativa.
-
-Primeiramente vamos entender a escala.
+### Transformação da qualidade em variável categórica
 
 
 ```{r quality_scale}
-s
+hist(wines_dt$quality)
 ```
