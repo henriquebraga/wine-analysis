@@ -59,7 +59,7 @@ summary(wines_dt)
 Podemos já verificar alguns comportamentos:
 
 * Existe uma divisão entre vinhos tinto e branco;
-* O campo `redis ualsugar` possui um grande desvio padrao se comparado aos outros campos. (Isso pode ser visto entre a diferenca da média para a mediana);
+* O campo `redisualsugar` possui um grande desvio padrao se comparado aos outros campos. (Isso pode ser visto entre a diferenca da média para a mediana);
 * Aparentemente há alguns outliers em boa parte dos campos do dataset (Isso pode ser visto pelos quartis);
 
 Vamos guardar essas informações para outro momento e continuar nossa análise.
@@ -138,11 +138,11 @@ plot_ly(x = wines_dt$quality, type = 'histogram')
 plot_ly(x = wines_dt$Vinho, type = 'histogram')
 ```
 
-Com exceção do campo `vinhos` que é uma variável categórica, todos os campos numéricos seguem uma distribuição normal, apesar da presença de alguns outliers que iremos verificar posteriormente na análise.
+Com exceção do campo `vinhos` que é uma variável categórica, todos os campos numéricos seguem a tendência de uma distribuição normal, apesar da presença de alguns outliers que iremos verificar posteriormente na análise.
 
 Vemos também que a quantidade de vinhos brancos é muito maior que vinho tinto.
 
-No tópico a seguir, vamos confirmar esse comportamento, analisando as medidas centrais do conjunto de dados: media e mediana.
+No tópico a seguir, vamos confirmar esse comportamento, analisando as medidas de tendência central do conjunto de dados: media e mediana.
 
 ### Média e Mediana: Vinhos Tintos x Vinhos Brancos
 
@@ -175,7 +175,7 @@ plot_ly(x = wines_dt$freesulfurdioxide, type = 'histogram')
 
 Podemos observar que apesar do desenho ser similar à uma distribuição normal, isso se deu pois mais à esquerda, temos uma grande concentração de amostras.
 
-### Desvio Padrão e Outliers
+### Outliers
 
 Vamos verificar agora quem são os outliers por coluna em nosso conjunto de dados por meio de boxplots.
 
@@ -379,6 +379,7 @@ boxplot(wines_dt.white_wines$pH, data=wines_dt.white_wines, col=(c("blue","darkg
 ```
 
 Aqui é interessante: diferentemente do vinho tinto, a quantidade de outliers no campo `volatilidade do ácido` se manteve, no passo que a de `açúcar` diminuiu consideravelmente.
+
 ### Transformação da qualidade em variável categórica
 
 
