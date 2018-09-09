@@ -164,7 +164,7 @@ Podemos observar algumas diferenças interessantes entre os mesmos:
 * A volatidade de ácido é duas vezes maior em vinhos tintos;
 * O açúcar é maior para vinhos brancos;
 * O dióxido de carbono é mais que o dobro nos vinhos brancos;
-* Os outros campos são similares.
+* Os outros campos são similares uns com os outros em sua distribuição de dados.
 
 
 Analisando a assimetria (diferença entre média e mediana) e conforme verificamos nos histogramas acima, as colunas de vinhos seguem uma distribuição normal. Vamos fazer um plot das maiores diferenças entre média e mediana. O campo que teve uma diferença mais significativa foi o dióxido de carbono.
@@ -175,45 +175,92 @@ plot_ly(x = wines_dt$freesulfurdioxide, type = 'histogram')
 
 Podemos observar que apesar do desenho ser similar à uma distribuição normal, isso se deu pois mais à esquerda, temos uma grande concentração de amostras.
 
-### Outliers
+### Outliers e quartis
 
-Vamos verificar agora quem são os outliers por coluna em nosso conjunto de dados por meio de boxplots.
+Vamos verificar agora quem são os outliers por coluna em nosso conjunto de dados por meio de boxplots. Aproveitando a análise, verificaremos também os quartis de cada campo.
 
-```{r boxplot_outliers}
+```{r boxplot_fixed_acidity_outliers}
+
+boxplot(wines_dt$fixedacidity, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos", xlab="Acidez fixa")
+quantile(wines_dt$fixedacidity,type=4)
+```
+
+
+```{r boxplot_quality_outliers}
 boxplot(wines_dt$quality, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Qualidade")
+quantile(wines_dt$quality,type=4)
+```
+
+Vemos que o campo `qualidade`possui poucos outliers. A maior parte da qualidade está entre 5 e 6.
+
+```{r boxplot_density_outliers}
 
 boxplot(wines_dt$density, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Densidade")
+quantile(wines_dt$density,type=4)
+```
+
+No campo `densidade`, também observamos que há poucas variações.
+
+```{r boxplot_sulphates_outliers}
 
 boxplot(wines_dt$sulphates, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Sulfatos")
 
+quantile(wines_dt$sulphates,type=4)
+```
+No campo `sulfato`, verificamos que há uma grande tendência de dados a estarem maiores que a mediana. No caso o valor da mediana é 0.51, porém como podemos observar, há muitos valores discrepantes maiores que 1 (25% dos dados estão entre 0.6 e 2).
+
+```{r boxplot_chlorides_outliers}
+
 boxplot(wines_dt$chlorides, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Cloreto")
+quantile(wines_dt$chlorides,type=4)
+```
 
+No campo `cloreto`, também verificamos que há uma grande tendência de dados a estarem maiores que a mediana. No caso o valor da mediana é 0.51, porém como podemos observar, há muitos valores discrepantes maiores que ultrapassam os interquartis. No Q3, podemos observar a diferença dos valores: enquanto a mediana é 0.047, o Q3 (25% dos dados) possuem valores entre 0.065 e 0.611.
+
+
+```{r boxplot_volatileacidity_outliers}
 boxplot(wines_dt$volatileacidity, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Volatilidade do ácido")
+quantile(wines_dt$volatileacidity,type=4)
+```
+
+No campo `volatilidade da acidez`: o mesmo comportamento que os campos `cloreto`, ou seja, há muitos outliers a partir do `Q3` se comparado com o valor da mediana.
+
+```{r boxplot_citricacid_outliers}
 
 boxplot(wines_dt$citricacid, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Ácido Cítrico")
+quantile(wines_dt$citricacid,type=4)
+```
+
+```{r boxplot_residualsugar_outliers}
 
 boxplot(wines_dt$residualsugar, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos", xlab="Açúcar")
-
-boxplot(wines_dt$pH, data=wines_dt, col=(c("blue","darkgreen")),
-  main="pH", xlab="Sulfatos")
-
+quantile(wines_dt$residualsugar,type=4)
 ```
 
-Podemos observar pelo boxplot que com exceção de qualidade e denpsidade, todos os campos possuem uma quantidade alta de outliers. Posteriormente, dividiremos o conjunto de dados para verificar se os tipos de vinho (denotado pelo campo VINHO) devem ser agrupados e tratados separadamente.
+
+```{r boxplot_pH_outliers}
+boxplot(wines_dt$pH, data=wines_dt, col=(c("blue","darkgreen")),
+  main="pH", xlab="Sulfatos")
+quantile(wines_dt$pH,type=4)
+```
+
+
+Em resumo: podemos observar pelo boxplot que com exceção de qualidade e densidade, todos os campos possuem uma quantidade alta de outliers. Posteriormente, dividiremos o conjunto de dados para verificar se os tipos de vinho (denotado pelo campo VINHO) tem alguma relação com esse comportamento e devem ser agrupados e tratados separadamente.
+
 
 ### Correlações
 
 ## Dividindo o conjunto de dados: Vinhos brancos e Vinhos tintos
 
 Vamos utilizar as observações obtidas em nossa análise inicial e verificar se há uma discrepância entre os tipos de vinho.
-
 
 Primeiramente, criaremos um conjunto de dados de vinhos vermelhos.
 
@@ -317,38 +364,88 @@ plot_ly(x = wines_dt.white_wines$quality, type = 'histogram')
 plot_ly(x = wines_dt$Vinho, type = 'histogram')
 ```
 
-### Outliers: Vinhos brancos x Vinhos tintos
+### Outliers: Vinhos brancos x Vinhos tintos x Dataset original
 
-Verificamos na análise inicial antes de agruparmos por tipo de vinho, que haviam um grande número de outliers em diversos campos. Vamos verificar se isso ainda está ocorrendo.
+Verificamos na análise inicial antes de agruparmos por tipo de vinho, que haviam um grande número de outliers em diversos campos. Vamos fazer agora uma comparação de outliers entre os campos que estavam com amostras mais discrepantes: `densidade`, `sulfatos`, `cloreto`, `volatilidade da acidez`, `ácido cítrico`, `açúcar`, `sulfatos`. Para isso, vamos fazer dois boxplots por trecho: um
+representando o dataset original o outro o vinho tinto e branco.
 
-```{r boxplot_outliers_red_wines}
-boxplot(wines_dt.red_wines$quality, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Qualidade")
 
-boxplot(wines_dt.red_wines$density, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Densidade")
+```{r boxplot_outliers_density_red_wines_x_original_wines}
+boxplot(wines_dt.red_wines$density, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinhos Tintos", xlab="Densidade")
 
-boxplot(wines_dt.red_wines$sulphates, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Sulfatos")
-
-boxplot(wines_dt.red_wines$chlorides, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Cloreto")
-
-boxplot(wines_dt.red_wines$volatileacidity, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Volatilidade do ácido")
-
-boxplot(wines_dt.red_wines$citricacid, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Ácido Cítrico")
-
-boxplot(wines_dt.red_wines$residualsugar, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="Vinhos", xlab="Açúcar")
-
-boxplot(wines_dt.red_wines$pH, data=wines_dt.red_wines, col=(c("blue","darkgreen")),
-  main="pH", xlab="Sulfatos")
-
+boxplot(wines_dt$density, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos (Dataset Original)", xlab="Densidade")
 ```
 
-Vemos que para o vinho tinto, tivemos uma diminuição de outliers (a concentração fica maior no primeiro e segundo quartil) somente no campo ácido cítrico.
+É interessante notar que no caso acima ocorre o inverso: o campo `densidade` para vinhos tintos aumentou o número de outliers, apesar do intervalo dos valores serem menores.
+
+```{r boxplot_outliers_sulphates_red_wines_x_original_wines}
+boxplot(wines_dt.red_wines$sulphates, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinhos Tintos", xlab="Sulfatos")
+
+boxplot(wines_dt$sulphates, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos (Dataset Original)", xlab="Sulfatos")
+```
+
+No campo `sulfatos`, tivemos uma redução de outliers ao dividir o dataset.
+
+
+```{r boxplot_outliers_chlorides_red_wines_x_original_wines}
+
+boxplot(wines_dt$chlorides, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos (Dataset Original)", xlab="Cloretos")
+
+boxplot(wines_dt.red_wines$chlorides, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinhos Tintos", xlab="Cloretos")
+
+quantile(wines_dt$chlorides)
+quantile(wines_dt.red_wines$chlorides)
+```
+
+No campo `cloretos` verificamos que ao dividir o dataset, há mais itens que ficam no Q1 do que no dataset original. Vemos também que o intervalo do Q1 para `vinhos tintos` é duas vezes maior.
+
+```{r boxplot_outliers_volatileacidity_red_wines_x_original_wines}
+
+boxplot(wines_dt$volatileacidity, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos (Dataset Original)", xlab="Volatilidade da Acidez")
+
+boxplot(wines_dt.red_wines$volatileacidity, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinhos Tintos", xlab="Volatilidade da Acidez")
+
+quantile(wines_dt$volatileacidity)
+quantile(wines_dt.red_wines$volatileacidity)
+```
+
+No campo `volatilidade de acidez`, podemos ver que a quantidade de itens no Q4 diminuiu consideravelmente para os vinhos tintos. Comparando com o dataset original, vimos também que o valor absoluto do campo acabou ficando um pouco maior, assim podemos inferir que vinhos tintos possuem uma acidez maior que a de vinhos brancos.
+
+```{r boxplot_outliers_citricacid_red_wines_x_original_wines}
+boxplot(wines_dt$citricacid, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos (Dataset Original)", xlab="Ácido Cítrico")
+
+boxplot(wines_dt.red_wines$citricacid, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinhos Tintos", xlab="Ácido Cítrico")
+
+quantile(wines_dt$citricacid)
+quantile(wines_dt.red_wines$citricacid)
+```
+No campo `ácido cítrico`, podemos observar que para vinhos tintos os outliers praticamente inexistiram, sendo que a maioria dos dados ficou concentrado entre Q1 e Q3 (interquartil).
+
+Também vemos que o valor absoluto dos intervalos diminuiu bastante, logo podemos inferir que vinhos brancos possuem uma quantidade de `ácido cítrico` muito maior.
+
+```{r boxplot_outliers_residualsugar_red_wines_x_original_wines}
+boxplot(wines_dt$residualsugar, data=wines_dt, col=(c("blue","darkgreen")),
+  main="Vinhos (Dataset Original)", xlab="Açúcar Residual")
+
+boxplot(wines_dt.red_wines$residualsugar, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinhos Tintos", xlab="Açúcar Residual")
+
+quantile(wines_dt$residualsugar)
+quantile(wines_dt.red_wines$residualsugar)
+```
+O campo `açúcar residual`, tivemos uma diminuição nos intervalos, porém houve um aumento na concentração de dados em Q4 se comparado ao dataset original. 
+
+Neste caso também é interessante notar que se consideramos Q1, o valor absoluto aumentou (temos `0.6`a `1.8` para o dataset original x `0.9` a `1.9` para vinhos tintos). Porém, se olharmos Q2, Q3 e Q4 os intervalos do dataset absolutos original são relativamente maiores. É provável que vinhos brancos tenham mais açúcar no geral, mas vale indicar esse comportamento diferente no Q1.
 
 Vamos verificar o comportamento do vinho branco:
 
@@ -381,7 +478,6 @@ boxplot(wines_dt.white_wines$pH, data=wines_dt.white_wines, col=(c("blue","darkg
 Aqui é interessante: diferentemente do vinho tinto, a quantidade de outliers no campo `volatilidade do ácido` se manteve, no passo que a de `açúcar` diminuiu consideravelmente.
 
 ### Transformação da qualidade em variável categórica
-
 
 ```{r quality_scale}
 hist(wines_dt$quality)
