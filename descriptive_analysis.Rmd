@@ -256,6 +256,37 @@ quantile(wines_dt$pH,type=4)
 Em resumo: podemos observar pelo boxplot que com exceção de qualidade e densidade, todos os campos possuem uma quantidade alta de outliers. Posteriormente, dividiremos o conjunto de dados para verificar se os tipos de vinho (denotado pelo campo VINHO) tem alguma relação com esse comportamento e devem ser agrupados e tratados separadamente.
 
 
+### Medidas de Dispersão: Desvio Padrão e Variância
+
+Vamos realizar a análise da dispersão dos dados de cada coluna.
+
+Para isso, utilizaremos a `variância populacional` e o `desvio padrão`. Lembrando que quanto maior a distância para a média, maior será a variância dos dados.
+
+
+```{r dispersion_function}
+
+p <- function(..., sep = ''){
+  paste(..., collapse = sep)
+}
+
+
+showDispersion <- function (col, columnName){
+  print(p('Variação Populacional de', columnName, 'é', var(col), sep = ' '))
+  print(p('Desvio padrão de', columnName, sd(col), 'é', sep = ' '))
+  print(p('A média dos valores de ', columnName, 'é', mean(col), sep = ' '))
+  print(p('A diferença entre a média e a mediana é de', columnName, 'é', abs(mean(col) - sd(col)), sep = ' '))
+}
+```
+
+```{r dispersion_quality_wine}
+showDispersion(wines_dt$quality, 'qualidade')
+```
+
+
+```{r standard_deviation}
+sd(wines_dt$quality)
+```
+
 ### Correlações
 
 ## Dividindo o conjunto de dados: Vinhos brancos e Vinhos tintos
