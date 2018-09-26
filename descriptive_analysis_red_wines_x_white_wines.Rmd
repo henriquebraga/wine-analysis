@@ -6,11 +6,14 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+install.packages("knitr")
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Instalar os pacotes
 ```{r install_packages}
+
 install.packages('dplyr')
 install.packages('plotly')
 ```
@@ -86,6 +89,16 @@ add_histogram(x = ~wines_dt.white_wines$volatileacidity, name='Vinho Branco') %>
 comparing_hist
 ```
 
+```{r boxplot_volatileacidity_outliers_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$volatileacidity, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Volatilidade da acidez")
+boxplot(wines_dt.white_wines$volatileacidity, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Volatilidade da acidez")
+
+quantile(wines_dt.red_wines$volatileacidity,type=4)
+quantile(wines_dt.white_wines$volatileacidity,type=4)
+```
 
 
 ### Ácido Cítrico
@@ -96,6 +109,17 @@ comparing_hist <- plot_ly(alpha = 0.6) %>%
 add_histogram(x = ~wines_dt.white_wines$citricacid, name='Vinho Branco') %>%
   layout(barmode = 'overlay')
 comparing_hist
+```
+
+```{r boxplot_distribution_citricacid_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$citricacid, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Ácido Cítrico")
+boxplot(wines_dt.white_wines$citricacid, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Ácido Cítrico")
+
+quantile(wines_dt.red_wines$citricacid,type=4)
+quantile(wines_dt.white_wines$citricacid,type=4)
 ```
 
 ### Açúcar Residual
@@ -109,6 +133,17 @@ comparing_hist
 
 ```
 
+```{r boxplot_distribution_residualsugar_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$residualsugar, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Ácido Cítrico")
+boxplot(wines_dt.white_wines$residualsugar, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Açúcar Residual")
+
+quantile(wines_dt.red_wines$residualsugar,type=4)
+quantile(wines_dt.white_wines$residualsugar,type=4)
+```
+
 ### Cloreto
 
 ```{r data_distribution_chlorides_per_wine_type}
@@ -117,6 +152,17 @@ comparing_hist <- plot_ly(alpha = 0.6) %>%
 add_histogram(x = ~wines_dt.white_wines$chlorides, name='Vinho Branco') %>%
   layout(barmode = 'overlay')
 comparing_hist
+```
+
+```{r boxplot_distribution_chlorides_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$chlorides, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Cloreto")
+boxplot(wines_dt.white_wines$chlorides, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Cloreto")
+
+quantile(wines_dt.red_wines$chlorides,type=4)
+quantile(wines_dt.white_wines$chlorides,type=4)
 ```
 
 ### Dióxido de Enxofre Livre
@@ -129,6 +175,17 @@ add_histogram(x = ~wines_dt.white_wines$freesulfurdioxide, name='Vinho Branco') 
 comparing_hist
 ```
 
+```{r boxplot_distribution_freesulfurdioxide_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$freesulfurdioxide, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Dióxido de Enxofre Livre")
+boxplot(wines_dt.white_wines$freesulfurdioxide, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Dióxido de Enxofre Livre")
+
+quantile(wines_dt.red_wines$freesulfurdioxide,type=4)
+quantile(wines_dt.white_wines$freesulfurdioxide,type=4)
+```
+
 ### Total de Dióxido de Enxofre
 
 ```{r data_distribution_totalsulfurdioxide_per_wine_type}
@@ -139,12 +196,36 @@ add_histogram(x = ~wines_dt.white_wines$totalsulfurdioxide, name='Vinho Branco')
 comparing_hist
 ```
 
+```{r boxplot_distribution_totalsulfurdioxide_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$totalsulfurdioxide, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Total de Dióxido de Enxofre")
+boxplot(wines_dt.white_wines$totalsulfurdioxide, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Total de Dióxido de Enxofre")
+
+quantile(wines_dt.red_wines$totalsulfurdioxide,type=4)
+quantile(wines_dt.white_wines$totalsulfurdioxide,type=4)
+```
+
+### Densidade
+
 ```{r data_distribution_density_per_wine_type}
 comparing_hist <- plot_ly(alpha = 0.6) %>% 
   add_histogram(x = ~wines_dt.red_wines$density, type = 'histogram', name='Vinho Tinto' ) %>%
 add_histogram(x = ~wines_dt.white_wines$density, name='Vinho Branco') %>%
   layout(barmode = 'overlay')
 comparing_hist
+```
+
+```{r boxplot_distribution_density_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$density, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Densidade")
+boxplot(wines_dt.white_wines$density, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Densidade")
+
+quantile(wines_dt.red_wines$density,type=4)
+quantile(wines_dt.white_wines$density,type=4)
 ```
 
 ### pH
@@ -157,6 +238,17 @@ add_histogram(x = ~wines_dt.white_wines$pH, name='Vinho Branco') %>%
 comparing_hist
 ```
 
+```{r boxplot_distribution_ph_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$density, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="pH")
+boxplot(wines_dt.white_wines$density, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="pH")
+
+quantile(wines_dt.red_wines$pH,type=4)
+quantile(wines_dt.white_wines$pH,type=4)
+```
+
 ### Sulfatos
 
 ```{r data_distribution_sulphates_per_wine_type}
@@ -165,6 +257,17 @@ comparing_hist <- plot_ly(alpha = 0.6) %>%
 add_histogram(x = ~wines_dt.white_wines$sulphates, name='Vinho Branco') %>%
   layout(barmode = 'overlay')
 comparing_hist
+```
+
+```{r boxplot_distribution_sulphates_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$sulphates, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Sulfatos")
+boxplot(wines_dt.white_wines$sulphates, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Sulfatos")
+
+quantile(wines_dt.red_wines$sulphates,type=4)
+quantile(wines_dt.white_wines$sulphates,type=4)
 ```
 
 ### Álcool
@@ -177,6 +280,17 @@ add_histogram(x = ~wines_dt.white_wines$alcohol, name='Vinho Branco') %>%
 comparing_hist
 ```
 
+```{r boxplot_distribution_alcohol_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$alcohol, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Álcool")
+boxplot(wines_dt.white_wines$alcohol, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Álcool")
+
+quantile(wines_dt.red_wines$alcohol,type=4)
+quantile(wines_dt.white_wines$alcohol,type=4)
+```
+
 ### Qualidade
 
 ```{r data_distribution_quality_per_wine_type}
@@ -185,6 +299,17 @@ comparing_hist <- plot_ly(alpha = 0.6) %>%
 add_histogram(x = ~wines_dt.white_wines$quality, name='Vinho Branco') %>%
   layout(barmode = 'overlay')
 comparing_hist
+```
+
+```{r boxplot_distribution_quality_per_wine_type}
+par(mfrow=c(2,2))
+boxplot(wines_dt.red_wines$quality, data=wines_dt.red_wines, col=(c("red","darkgreen")),
+  main="Vinho Tinto", xlab="Qualidade")
+boxplot(wines_dt.white_wines$quality, data=wines_dt.white_wines, col=(c("blue","darkgreen")),
+  main="Vinho Branco", xlab="Qualidade")
+
+quantile(wines_dt.red_wines$quality,type=4)
+quantile(wines_dt.white_wines$quality,type=4)
 ```
 
 ## Outliers: Vinhos brancos x Vinhos tintos x Dataset original
@@ -200,6 +325,7 @@ boxplot(wines_dt.red_wines$density, data=wines_dt.red_wines, col=(c("red","darkg
 boxplot(wines_dt$density, data=wines_dt, col=(c("blue","darkgreen")),
   main="Vinhos (Dataset Original)", xlab="Densidade")
 ```
+
 
 É interessante notar que no caso acima ocorre o inverso: o campo `densidade` para vinhos tintos aumentou o número de outliers, apesar do intervalo dos valores serem menores.
 
