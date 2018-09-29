@@ -34,6 +34,11 @@ wines_dt <- read.csv2("wines.csv", row.names=1)
 
 Vamos utilizar as observações obtidas em nossa análise inicial e verificar se há uma discrepância entre os tipos de vinho.
 
+
+```{r describe_wine_types}
+levels(wines_dt$Vinho)
+```
+
 Primeiramente, criaremos um conjunto de dados de vinhos vermelhos.
 
 ```{r filter_wine_datasets_red}
@@ -89,7 +94,7 @@ add_histogram(x = ~wines_dt.white_wines$volatileacidity, name='Vinho Branco') %>
 comparing_hist
 ```
 
-```{r boxplot_volatileacidity_outliers_per_wine_type}
+```{r boxplot_distribution_volatileacidity_per_wine_type}
 par(mfrow=c(2,2))
 boxplot(wines_dt.red_wines$volatileacidity, data=wines_dt.red_wines, col=(c("red","darkgreen")),
   main="Vinho Tinto", xlab="Volatilidade da acidez")
@@ -99,6 +104,16 @@ boxplot(wines_dt.white_wines$volatileacidity, data=wines_dt.white_wines, col=(c(
 quantile(wines_dt.red_wines$volatileacidity,type=4)
 quantile(wines_dt.white_wines$volatileacidity,type=4)
 ```
+
+Acima podemos verificar algumas características nos quartis sobre a `volatilidade da acidez` se compararmos os vinhos e tintos e brancos:
+
+* Do Q3 para a frente (após o corte da mediana de 50% dos dados) a diferença é quase duas vezes maior no vinho tinto se comparado ao vinho branco (0.52 para 0.26);
+
+* Porém antes da mediana, esta diferença aumenta gradativamente;
+
+* No vinho branco, temos uma grande quantidade de dados fora da distância entre Q1 e Q3;
+
+* Se analisarmos o histograma com a distribuição de dados, podemos averiguar que isso deve principalmente há uma grande quantidade de vinhos que possui 0.315 até 0.324;
 
 
 ### Ácido Cítrico
@@ -122,6 +137,20 @@ quantile(wines_dt.red_wines$citricacid,type=4)
 quantile(wines_dt.white_wines$citricacid,type=4)
 ```
 
+Acima podemos verificar algumas características nos quartis sobre a `ácido cítrico` se compararmos os vinhos e tintos e brancos:
+
+* É interessante que não fica tão claro pelos números absolutos dos quartis se algum vinho tende a ter mais `ácido cítrico` que outro; 
+
+* Se levarmos em conta primeiro quartil (até 25% dos dados) temos o valor do vinho branco sendo três vezes maior (0.09 do vinho tinto contra 0.27 do vinho branco) que o vinho tinto;
+
+* Porém, verificando o segundo quartil (até 50% dos dados), essa razão cai muito (0.26 do vinho tinto contra 0.32 do vinho branco);
+
+* No terceiro quartil (até 75% dos dados), o valor do `ácido cítrico` ultrapassa o do vinho branco;
+
+* Por fim, após o terceiro quartil (até 100% dos dados), o vinho branco volta a ser 50% maior que o vinho branco (1.00 contra 1.66)
+
+* Se observamos o histograma, vemos que o vinho branco possui uma distribuição mais simétrica se comparado ao vinho branco em relação ao `ácido cítrico`;
+
 ### Açúcar Residual
 
 ```{r data_distribution_residualsugar_per_wine_type}
@@ -144,6 +173,16 @@ quantile(wines_dt.red_wines$residualsugar,type=4)
 quantile(wines_dt.white_wines$residualsugar,type=4)
 ```
 
+Acima podemos verificar algumas características nos quartis sobre a `açúcar residual` se compararmos os vinhos e tintos e brancos:
+
+* No primeiro quartil (até 25% dos dados), aparentemente os vinhos tintos e brancos parecem ter valores similares de açúcar residual (1.9 para vinhos tintos contra 1.7 de vinhos brancos);
+
+* Porém verificando os próximos quartis, a razão deste valor aumenta até chegar à três vezes a razão em 100% dados (15.5 do vinho tinto contra 45.8 do vinho branco);
+
+* Se olharmos o histograma, essa característica pode ser explicada porque há uma grande frequência de vinhos brancos entre 1 e 1.99 (aproximadamente 1344 vinhos brancos);
+
+* No vinho tinto, também podemos verificar a presença de muitos itens fora da amplitude interquartil;
+
 ### Cloreto
 
 ```{r data_distribution_chlorides_per_wine_type}
@@ -164,6 +203,18 @@ boxplot(wines_dt.white_wines$chlorides, data=wines_dt.white_wines, col=(c("blue"
 quantile(wines_dt.red_wines$chlorides,type=4)
 quantile(wines_dt.white_wines$chlorides,type=4)
 ```
+
+Acima podemos verificar algumas características nos quartis sobre a `cloretos` se compararmos os vinhos e tintos e brancos:
+
+* No primeiro quartil (até 25% dos dados), aparentemente os vinhos tintos e brancos parecem ter valores similares de `cloretos` (0.012 para vinhos tintos contra 0.009 de vinhos brancos);
+
+* Porém verificando os próximos quartis, a razão deste valor aumenta chegando perto duas vezes a razão em 100% dados (0.611 do vinho tinto contra 0.346 do vinho branco);
+
+* Existem também muitos itens fora da amplitude interquartil (dados entre o primeiro e o terceiro quartil)
+
+* Em ambos os tipos de vinho, também podemos verificar a presença de muitos itens fora da amplitude interquartil;
+
+* Se olharmos o histograma, essa característica pode ser explicada porque há uma grande frequência que ultrapassam 0.090 (até 75% dos dados) para vinhos tintos e 0.050 para vinhos brancos (até 75% dos dados);
 
 ### Dióxido de Enxofre Livre
 
@@ -186,6 +237,16 @@ quantile(wines_dt.red_wines$freesulfurdioxide,type=4)
 quantile(wines_dt.white_wines$freesulfurdioxide,type=4)
 ```
 
+
+Acima podemos verificar algumas características nos quartis sobre a `Dióxido de Enxofre Livre` se compararmos os vinhos e tintos e brancos:
+
+* Nos vinhos brancos, há uma quantidade absoluta relativamente maior de `Dióxido de Enxofre Livre`;
+
+* Aparentemente, há uma presença de mais itens fora da amplitude interquartil nos vinhos tintos do que no vinho branco;
+
+* Porém verificando os próximos quartis, a razão deste valor aumenta chegando perto duas vezes a razão em 100% dados (0.611 do vinho tinto contra 0.346 do vinho branco);
+
+
 ### Total de Dióxido de Enxofre
 
 ```{r data_distribution_totalsulfurdioxide_per_wine_type}
@@ -206,6 +267,14 @@ boxplot(wines_dt.white_wines$totalsulfurdioxide, data=wines_dt.white_wines, col=
 quantile(wines_dt.red_wines$totalsulfurdioxide,type=4)
 quantile(wines_dt.white_wines$totalsulfurdioxide,type=4)
 ```
+
+Acima podemos verificar algumas características nos quartis sobre a `Total de Dióxido de Enxofre` se compararmos os vinhos e tintos e brancos:
+
+* Nos vinhos brancos, há uma quantidade absoluta relativamente maior de `Total de Enxofre`;
+
+* Aparentemente, há uma presença de mais itens fora da amplitude interquartil nos vinhos brancos do que nos vinhos tintos (apesar de que os valores fora da amplitude interquartil do vinho tinto serem maiores);
+
+* Aparentemente também há uma quantidade maior de outliers no vinho tinto do que no vinho branco;
 
 ### Densidade
 
@@ -228,6 +297,12 @@ quantile(wines_dt.red_wines$density,type=4)
 quantile(wines_dt.white_wines$density,type=4)
 ```
 
+Acima podemos verificar algumas características nos quartis sobre a `Densidade` se compararmos os vinhos e tintos e brancos:
+
+* Em ambos os vinhos a densidade parece ser bastante similar em valores absolutos;
+
+* Aparentemente também há uma quantidade maior de outliers no vinho branco do que no vinho tinto;
+
 ### pH
 
 ```{r data_distribution_ph_per_wine_type}
@@ -248,6 +323,15 @@ boxplot(wines_dt.white_wines$density, data=wines_dt.white_wines, col=(c("blue","
 quantile(wines_dt.red_wines$pH,type=4)
 quantile(wines_dt.white_wines$pH,type=4)
 ```
+
+Acima podemos verificar algumas características nos quartis sobre a `pH` se compararmos os vinhos e tintos e brancos:
+
+* o `pH` é ligeiramente maior no vinho tinto em valores absolutos;
+
+* Porém, em ambos os vinhos a densidade parece ser bastante similar;
+
+* Nos vinhos tintos, mais itens passaram da amplitude interquartil se comparado aos vinho brancos, porém neste aparentemente há alguns outliers.
+
 
 ### Sulfatos
 
@@ -270,6 +354,12 @@ quantile(wines_dt.red_wines$sulphates,type=4)
 quantile(wines_dt.white_wines$sulphates,type=4)
 ```
 
+Acima podemos verificar algumas características nos quartis sobre os `sulfatos` se compararmos os vinhos e tintos e brancos:
+
+* No vinho tinto, os `sulfatos` são maiores em valores absolutos em todos os quartis, sendo que a razão aumenta em cada um;
+
+* Em ambos os vinhos, muitos itens passaram da amplitude interquartil.
+
 ### Álcool
 
 ```{r data_distribution_alcohol_per_wine_type}
@@ -290,6 +380,16 @@ boxplot(wines_dt.white_wines$alcohol, data=wines_dt.white_wines, col=(c("blue","
 quantile(wines_dt.red_wines$alcohol,type=4)
 quantile(wines_dt.white_wines$alcohol,type=4)
 ```
+
+Acima podemos verificar algumas características nos quartis sobre o `álcool` se compararmos os vinhos e tintos e brancos:
+
+* No vinho tinto, há a presença de outliers altos e baixos;
+
+* O `álcool` é similar , sendo iguais no primeiro quartil, levemente maior para o vinho branco no segundo quartil (10.4 contra 10.2), levemente maior no terceiro quartil para o vinho branco no terceiro quartil (11.4 contra 11.1) e o vinho tinto terminando com maior (provavelmente por conta do outlier);
+
+* Em ambos os vinhos, muitos itens passaram da amplitude interquartil.
+
+* A distribuição de dados é similar entre os outros
 
 ### Qualidade
 
@@ -312,9 +412,11 @@ quantile(wines_dt.red_wines$quality,type=4)
 quantile(wines_dt.white_wines$quality,type=4)
 ```
 
+Como a qualidade é a variável que queremos prever e a análise sobre esta já foi feita na análise introdutória, podemos pulá-la.
+
 ## Outliers: Vinhos brancos x Vinhos tintos x Dataset original
 
-Verificamos na análise inicial antes de agruparmos por tipo de vinho, que haviam um grande número de outliers em diversos campos. Vamos fazer agora uma comparação de outliers entre os campos que estavam com amostras mais discrepantes: `densidade`, `sulfatos`, `cloreto`, `volatilidade da acidez`, `ácido cítrico`, `açúcar`, `sulfatos`. Para isso, vamos fazer dois boxplots por trecho: um
+Verificamos na análise inicial antes de agruparmos por tipo de vinho, que haviam um grande número de outliers em diversos campos. Vamos fazer agora uma comparação de outliers entre os campos que estavam com amostras fora da distância interquartílica: `densidade`, `sulfatos`, `cloreto`, `volatilidade da acidez`, `ácido cítrico`, `açúcar`, `sulfatos`. Para isso, vamos fazer dois boxplots por trecho: um
 representando o dataset original o outro o vinho tinto e branco.
 
 
@@ -426,3 +528,17 @@ boxplot(wines_dt.white_wines$pH, data=wines_dt.white_wines, col=(c("blue","darkg
 
 Aqui é interessante: diferentemente do vinho tinto, a quantidade de outliers no campo `volatilidade do ácido` se manteve, no passo que a de `açúcar` diminuiu consideravelmente.
 
+
+
+## Correlações
+
+
+## Decisão Final
+
+Optamos por utilizar apenas vinhos brancos pelos seguintes motivos:
+
+* Amostragem é maior;
+
+* A distribuição de dados está mais simétrica para a maioria dos campos para o vinho branco;
+
+* No vinho branco, há uma quantidade de outliers menores para a maioria dos campos se comparado ao vinho tinto;
