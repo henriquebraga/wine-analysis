@@ -162,7 +162,7 @@ aggregate(wines_dt[,-13],
           FUN = median)
 ```
 
-Podemos obsXervar algumas diferenças interessantes entre os mesmos: 
+Podemos observar algumas diferenças interessantes entre os mesmos: 
 
 * A acidez para vinhos tintos é maior;
 * A volatidade de ácido é duas vezes maior em vinhos tintos;
@@ -178,6 +178,13 @@ plot_ly(x = wines_dt$freesulfurdioxide, type = 'histogram')
 
 Podemos observar que apesar do desenho ser similar à uma distribuição normal, isso se deu pois mais à esquerda, temos uma grande concentração de amostras.
 
+Conforme poderemos observar, o campo `qualidade` tem distribuição e proporções similares para ambos os vinhos.
+
+```{r frequency_by_wine_type}
+table(as.factor(wines_dt$quality), wines_dt$Vinho, useNA = "ifany")
+CrossTable(as.factor(wines_dt$quality), wines_dt$Vinho) 
+
+```
 ### Outliers e quartis
 
 Vamos verificar agora quem são os outliers por coluna em nosso conjunto de dados por meio de boxplots. Aproveitando a análise, verificaremos também os quartis de cada campo.
@@ -306,11 +313,7 @@ aggregate(wines_dt[,-13],
           FUN = median)
 ```
 
-Outro fator que nos fez dividir o dataset foi a diferença entre a frequência das categorias em relação ao campo `qualidade`.
 
-```{r frequency_by_wine_type}
-table(as.factor(wines_dt$quality), wines_dt$Vinho, useNA = "ifany")
-```
 Decidimos dividir o dataset em dois conjuntos: vinhos brancos e vinhos tintos.
 
 A análise continua no arquivo `descriptive_analysis_red_wines_x_white_wines.Rmd`, onde faremos um comparativo entre vinhos brancos e vinhos tintos e a partir dessa análise, decidir qual será a categoria de vinho que tentaremos prever as notas.
