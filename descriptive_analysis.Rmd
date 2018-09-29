@@ -17,12 +17,16 @@ Instale os pacotes para poder realizar a análise descritiva:
 ```{r install_packages}
 install.packages('dplyr')
 install.packages('plotly')
+install.packages('gmodels')
+
 ```
 
 ## Carregar bibliotecas
+
 ```{r load_libraries}
 library(plotly)
 library(dplyr)
+library(gmodels)
 ```
 
 ## Analise: Estatistica Descritiva
