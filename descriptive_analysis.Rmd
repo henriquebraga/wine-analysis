@@ -286,8 +286,22 @@ showDispersion(wines_dt$quality, 'qualidade')
 sd(wines_dt$quality)
 ```
 
-Concluimos que não há muito sentido continuar a análise tratando as duas categorias de vinho da mesma forma. 
+Concluimos que não há muito sentido continuar a análise tratando as duas categorias de vinho da mesma forma.
+
+Há uma diferença considerável em boa parte dos campos que puderam ser observadas na análise.
+
+Para confirmar isso, podemos simplesmente tirar a média/mediana de todo o dataset e verificar que há uma diferença se compararmos vinhos brancos x vinhos tintos.
+
+```{r mean_x_median}
+aggregate(wines_dt[,-13],
+          by = list(wines_dt$Vinho),
+          FUN = mean)
+
+aggregate(wines_dt[,-13],
+          by = list(wines_dt$Vinho),
+          FUN = median)
+```
 
 Decidimos dividir o dataset em dois conjuntos: vinhos brancos e vinhos tintos.
 
-A análise continua no arquivo `descriptive_analysis_red_wines_x_white_wines.Rmd`
+A análise continua no arquivo `descriptive_analysis_red_wines_x_white_wines.Rmd`, onde faremos um comparativo entre vinhos brancos e vinhos tintos e a partir dessa análise, decidir qual será a categoria de vinho que tentaremos prever as notas.
