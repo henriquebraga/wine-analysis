@@ -302,6 +302,11 @@ aggregate(wines_dt[,-13],
           FUN = median)
 ```
 
+Outro fator que nos fez dividir o dataset foi a diferença entre a frequência das categorias em relação ao campo `qualidade`.
+
+```{r frequency_by_wine_type}
+table(as.factor(wines_dt$quality), wines_dt$Vinho, useNA = "ifany")
+```
 Decidimos dividir o dataset em dois conjuntos: vinhos brancos e vinhos tintos.
 
 A análise continua no arquivo `descriptive_analysis_red_wines_x_white_wines.Rmd`, onde faremos um comparativo entre vinhos brancos e vinhos tintos e a partir dessa análise, decidir qual será a categoria de vinho que tentaremos prever as notas.
