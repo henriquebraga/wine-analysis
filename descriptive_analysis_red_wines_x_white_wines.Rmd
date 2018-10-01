@@ -12,16 +12,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Instalar os pacotes
-```{r install_packages}
 
+```{r install_packages}
 install.packages('dplyr')
 install.packages('plotly')
 ```
 
 ## Carregar a biblioteca
+
 ```{r load_libraries}
 library(plotly)
 library(dplyr)
+
 ```
 
 ## Carregar o dataset
@@ -72,8 +74,8 @@ getMaxValueByWineType <- function(dataset) {
 }
 getMaxValueByWineType(wines_dt)
 ```
-
 Podemos concluir que existe uma grande diferença nos campos para cada tipo de vinho. A `volatilidade da acidez`, por exemplo, a diferença entre os valores máximo é o dobro.
+
 
 Os maiores valores para `qualidade`, `álcool`, `densidade`, `pH`, `acidez` não tiveram tanta diferença.
 
@@ -337,7 +339,8 @@ Acima podemos verificar algumas características nos quartis sobre a `pH` se com
 
 ```{r data_distribution_sulphates_per_wine_type}
 comparing_hist <- plot_ly(alpha = 0.6) %>% 
-  add_histogram(x = ~wines_dt.red_wines$sulphates, type = 'histogram', name='Vinho Tinto' ) %>%
+  add_histogram(x = ~wines_dt.red_wines$sulphates, type = 'histogram', name='Vinho Tinto' ) %>% 
+
 add_histogram(x = ~wines_dt.white_wines$sulphates, name='Vinho Branco') %>%
   layout(barmode = 'overlay')
 comparing_hist
@@ -528,10 +531,112 @@ boxplot(wines_dt.white_wines$pH, data=wines_dt.white_wines, col=(c("blue","darkg
 
 Aqui é interessante: diferentemente do vinho tinto, a quantidade de outliers no campo `volatilidade do ácido` se manteve, no passo que a de `açúcar` diminuiu consideravelmente.
 
-
-
 ## Correlações
 
+Vamos agora verificar a matriz de correlações de vinhos tintos e brancos respectivamente.
+
+
+### Correlações Vinho Tinto
+
+```{r red_wines_matrix_correlations}
+res <- cor(wines_dt.red_wines[,-13])
+round(res, 2)
+```
+
+Os campos que tiveram mais correlações com `qualidade` foram (respectivamente na ordem de maior para menor correlação):
+
+* `Álcool`: 0.43 (correlação positiva);
+* `Volatilidade do Ácido`: -0.39 (correlação negativa)
+
+Porém, essas correlações são fracas. Pela tabela, vamos demonstrar algumas correlações tanto positivas quanto negativas entre campos que se mostraram mais fortes.
+
+
+### Correlações Positivas
+
+#### `Dióxido de Enxofre Livre` x `Total Dióxido de Enxofre`
+
+```{r red_wines_correlations_sulfurdioxide}
+plot(wines_dt.red_wines$freesulfurdioxide~wines_dt.red_wines$totalsulfurdioxide)
+abline(v=mean(wines_dt.red_wines$freesulfurdioxide), col="red")
+abline(h=mean(wines_dt.red_wines$totalsulfurdioxide), col="green")
+```
+
+#### `Densidade` x `Acidez Fixa`
+
+```{r red_wines_correlations_density_x_fixed_acidity}
+plot(wines_dt.red_wines$density~wines_dt.red_wines$fixedacidity)
+abline(v=mean(wines_dt.red_wines$density), col="red")
+abline(h=mean(wines_dt.red_wines$fixedacidity), col="green")
+```
+
+#### `Acidez Fixa` x `Ácido Cítrico`
+
+```{r red_wines_correlations_fixed_acidity_x_citric_acid}
+plot(wines_dt.red_wines$citricacid~wines_dt.red_wines$fixedacidity)
+abline(v=mean(wines_dt.red_wines$citricacid), col="red")
+abline(h=mean(wines_dt.red_wines$fixedacidity), col="green")
+```
+
+### Correlações Negativas
+
+#### `Acidez Fixa` x `pH`
+
+```{r red_wines_correlations_fixed_acidity_ph}
+plot(wines_dt.red_wines$fixedacidity~wines_dt.red_wines$pH)
+abline(v=mean(wines_dt.red_wines$fixedacidity), col="red")
+abline(h=mean(wines_dt.red_wines$pH), col="green")
+```
+
+## Correlações Vinho Branco
+
+```{r white_wines_matrix_correlations}
+res <- cor(wines_dt.white_wines[,-13])
+round(res, 2)
+```
+
+Os campos que tiveram mais correlações com `qualidade` foram (respectivamente na ordem de maior para menor correlação):
+
+* `Álcool`: 0.44 (correlação positiva);
+* `Densidade`: -0.31 (correlação negativa)
+
+Porém, essas correlações são fracas. Em relação ao `álcool`, o resultado foi bem similar ao vinho tinto. 
+
+Porém, diferentemente dos vinhos tintos, houve uma correlação negativa maior em `densidade` do que em `volatilidade do ácido`.
+
+### Correlações Positivas
+
+#### `Açúcar Residual` x `Densidade`
+
+```{r white_wines_correlations_residualsugar_x_density}
+plot(wines_dt.white_wines$residualsugar~wines_dt.white_wines$density)
+abline(v=mean(wines_dt.white_wines$residualsugar), col="red")
+abline(h=mean(wines_dt.white_wines$density), col="green")
+```
+
+#### `Dióxido de Enxofre Livre` x `Total Dióxido de Enxofre`
+
+```{r white_wines_correlations_sulfurdioxide}
+plot(wines_dt.white_wines$freesulfurdioxide~wines_dt.white_wines$totalsulfurdioxide)
+abline(v=mean(wines_dt.white_wines$freesulfurdioxide), col="red")
+abline(h=mean(wines_dt.white_wines$totalsulfurdioxide), col="green")
+```
+
+### Correlações Negativas
+
+#### `Álcool` x `Densidade`
+
+```{r white_wines_correlations_alcohol_x_density}
+plot(wines_dt.white_wines$alcohol~wines_dt.white_wines$density)
+abline(v=mean(wines_dt.white_wines$alcohol), col="red")
+abline(h=mean(wines_dt.white_wines$density), col="green")
+```
+
+
+Vale descrever algumas observações:
+
+* Para cada tipo de vinho, com exceção de campos relacionado à `Dióxido de Enxofre`, as correlações entre campos foram diferentes, o que só reforça que a decisão de separar o conjunto de dados por tipo de vinho foi correto;
+
+* Os valores para correlação do vinho branco se mostraram mais fortes.
 
 ## Decisão Final
 
@@ -542,3 +647,5 @@ Optamos por utilizar apenas vinhos brancos pelos seguintes motivos:
 * A distribuição de dados está mais simétrica para a maioria dos campos para o vinho branco;
 
 * No vinho branco, há uma quantidade de outliers menores para a maioria dos campos se comparado ao vinho tinto;
+
+* Os valores de correlações para vinho branco são maiores. Consideramos que essa característica pode nos ajudar na montagem de predição do modelo final.
