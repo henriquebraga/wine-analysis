@@ -1,0 +1,114 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Instalar os pacotes
+
+```{r install_packages}
+install.packages('dplyr')
+install.packages('plotly')
+```
+
+## Carregar a biblioteca
+
+```{r load_libraries}
+library(plotly)
+library(dplyr)
+
+```
+
+## Carregar o dataset
+
+```{r load_dataset}
+wines_dt <- read.csv2("wines.csv", row.names=1)
+```
+
+## Obter os dados de vinho branco
+
+```{r}
+wines_dt.white_wines <- wines_dt %>% filter(Vinho == 'WHITE')
+summary(wines_dt.white_wines)
+```
+
+Vamos agora seguir com nossa análise utilizando apenas os vinhos brancos. Como boa parte da análise exploratória já foi realizada nos outros markdowns, vamos analisar apenas o que restou: outliers, PCA e a variância.
+
+Com toda a análise feita, finalmente poderemos aplicar modelos preditivos.
+
+## Tratamento para Outliers
+
+Precisamos entender os outliers, pois eles podem ter um impacto direto em nossa predição posteriormente. Vamos trabalhar com 1,5 vezes a distância interquartílica em cada campo(Entre 25% a 75% dos dados) utilizando uma abordagem univariável para variáveis contínuas.
+
+### Detectando os Outliers univariavelmente
+
+#### Acidez Fixa
+
+```{r}
+plot_ly(y=wines_dt.white_wines$fixedacidity, main='fixedacidity', type = 'box', name = 'Acidez Fixa')
+```
+
+#### Volatilidade do Ácido
+
+```{r}
+plot_ly(y=wines_dt.white_wines$volatileacidity, main='residualsugar', type = 'box', name = 'Volatilidade do Ácido')
+```
+
+
+#### Ácido Cítrico
+
+```{r}
+plot_ly(y=wines_dt.white_wines$citricacid, main='citricacid', type = 'box', name = 'Ácido Cítrico')
+```
+
+#### Açúcar Residual
+
+```{r}
+plot_ly(y=wines_dt.white_wines$residualsugar, main='residualsugar', type = 'box', name = 'Açúcar Residual')
+```
+
+#### Cloretos
+
+```{r}
+plot_ly(y=wines_dt.white_wines$chlorides, main='chlorides', type = 'box', name = 'Cloretos')
+```
+
+#### Dióxido de Enxofre Livre
+
+```{r}
+plot_ly(y=wines_dt.white_wines$freesulfurdioxide, main='freesulfurdioxide', type = 'box', name = 'Dióxido de Enxofre Livre')
+```
+
+#### Total de Dióxido de Enxofre
+
+```{r}
+plot_ly(y=wines_dt.white_wines$totalsulfurdioxide, main='totalsulfurdioxide', type = 'box', name = 'Total de Dióxido de Enxofre')
+```
+
+#### Densidade
+
+```{r}
+plot_ly(y=wines_dt.white_wines$density, main='density', type = 'box', name = 'Densidade')
+```
+
+#### pH
+
+```{r}
+plot_ly(y=wines_dt.white_wines$pH, main='pH', type = 'box', name = 'pH')
+```
+
+#### Sulfatos
+
+```{r}
+plot_ly(y=wines_dt.white_wines$sulphates, main='sulphates', type = 'box', name = 'Sulfatos')
+```
+
+#### Álcool
+
+```{r}
+plot_ly(y=wines_dt.white_wines$alcohol, main='alcohol', type = 'box', name = 'Álcool')
+```
+
+## Variância
+
+## PCA
+
