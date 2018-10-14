@@ -37,75 +37,170 @@ Com toda a análise feita, finalmente poderemos aplicar modelos preditivos.
 
 ## Tratamento para Outliers
 
-Precisamos entender os outliers, pois eles podem ter um impacto direto em nossa predição posteriormente. Vamos trabalhar com 1,5 vezes a distância interquartílica em cada campo(Entre 25% a 75% dos dados) utilizando uma abordagem univariável para variáveis contínuas.
+Precisamos entender os outliers, pois eles podem ter um impacto direto em nossa predição posteriormente. Vamos trabalhar com 1,5 vezes a distância interquartílica em cada campo(considerando 25% para o limite inferior/ 75% dos dados para o limite superior) utilizando uma abordagem univariável para variáveis contínuas.
 
 ### Detectando os Outliers univariavelmente
+
+
+```{r}
+find_outlier_values <- function(field){
+  AIQ_outlier <-quantile(field,.75,type=2)-quantile(field,.25,type=2)
+  sup_outlier = quantile(field,.75,type=4)+1.5*AIQ_outlier
+  inf_outlier = quantile(field,.25,type=2)-1.5*AIQ_outlier
+  c(inf_outlier, sup_outlier)
+}
+
+remove_outliers <- function(field, na.rm = TRUE, ...) {
+  qnt <- quantile(field, probs=c(.25, .75), na.rm = na.rm, ...)
+  H <- 1.5 * IQR(field, na.rm = na.rm)
+  y <- field
+  y[field < (qnt[1] - H)] <- NA
+  y[field > (qnt[2] + H)] <- NA
+  y
+}
+
+```
 
 #### Acidez Fixa
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$fixedacidity, main='fixedacidity', type = 'box', name = 'Acidez Fixa')
+
+removed_fixedacidity_outliers <- remove_outliers(wines_dt.white_wines$fixedacidity)
+find_outlier_values(wines_dt.white_wines$fixedacidity)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$fixedacidity, main='fixedacidity', type = 'box', name = 'Acidez Fixa')
+without_outliers <- plot_ly(y=removed_fixedacidity_outliers, main='fixedacidity', type = 'box', name = 'Acidez Fixa (sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### Volatilidade do Ácido
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$volatileacidity, main='residualsugar', type = 'box', name = 'Volatilidade do Ácido')
+plot_ly(y=wines_dt.white_wines$volatileacidity, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido')
 ```
 
 
 #### Ácido Cítrico
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$citricacid, main='citricacid', type = 'box', name = 'Ácido Cítrico')
+
+removed_citricacid_outliers <- remove_outliers(wines_dt.white_wines$citricacid)
+find_outlier_values(wines_dt.white_wines$citricacid)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$citricacid, main='citricacid', type = 'box', name = 'Ácido Cítrico')
+without_outliers <- plot_ly(y=removed_citricacid_outliers, main='citricacid', type = 'box', name = 'Ácido Cítrico (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### Açúcar Residual
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$residualsugar, main='residualsugar', type = 'box', name = 'Açúcar Residual')
+find_outlier_values(wines_dt.white_wines$residualsugar)
+removed_residualsugar_outliers <- remove_outliers(wines_dt.white_wines$residualsugar)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$residualsugar, main='residualsugar', type = 'box', name = 'Açúcar Residual')
+without_outliers <- plot_ly(y=removed_residualsugar_outliers, main='residualsugar', type = 'box', name = 'Açúcar Residual (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
+
 ```
 
 #### Cloretos
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$chlorides, main='chlorides', type = 'box', name = 'Cloretos')
+find_outlier_values(wines_dt.white_wines$chlorides)
+removed_chlorides_outliers <- remove_outliers(wines_dt.white_wines$chlorides)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$chlorides, main='chlorides', type = 'box', name = 'Cloretos')
+without_outliers <- plot_ly(y=removed_chlorides_outliers, main='chlorides', type = 'box', name = 'Cloretos (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### Dióxido de Enxofre Livre
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$freesulfurdioxide, main='freesulfurdioxide', type = 'box', name = 'Dióxido de Enxofre Livre')
+find_outlier_values(wines_dt.white_wines$freesulfurdioxide)
+removed_freesulfurdioxide_outliers <- remove_outliers(wines_dt.white_wines$freesulfurdioxide)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$freesulfurdioxide, main='freesulfurdioxide', type = 'box', name = 'Dióxido de Enxofre Livre')
+
+without_outliers <- plot_ly(y=removed_freesulfurdioxide_outliers, main='freesulfurdioxide', type = 'box', name = 'Dióxido de Enxofre Livre (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### Total de Dióxido de Enxofre
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$totalsulfurdioxide, main='totalsulfurdioxide', type = 'box', name = 'Total de Dióxido de Enxofre')
+find_outlier_values(wines_dt.white_wines$totalsulfurdioxide)
+removed_totalsulfurdioxide_outliers <- remove_outliers(wines_dt.white_wines$totalsulfurdioxide)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$totalsulfurdioxide, main='totalsulfurdioxide', type = 'box', name = 'Total de Dióxido de Enxofre')
+without_outliers <- plot_ly(y=removed_totalsulfurdioxide_outliers, main='totalsulfurdioxide', type = 'box', name = 'Total de Dióxido de Enxofre (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### Densidade
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$density, main='density', type = 'box', name = 'Densidade')
+find_outlier_values(wines_dt.white_wines$density)
+removed_density_outliers <- remove_outliers(wines_dt.white_wines$density)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$density, main='density', type = 'box', name = 'Densidade')
+without_outliers <- plot_ly(y=removed_density_outliers, main='density', type = 'box', name = 'Densidade (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### pH
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$pH, main='pH', type = 'box', name = 'pH')
+find_outlier_values(wines_dt.white_wines$pH)
+removed_pH_outliers <- remove_outliers(wines_dt.white_wines$pH)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$pH, main='pH', type = 'box', name = 'pH')
+without_outliers <- plot_ly(y=removed_pH_outliers, main='pH', type = 'box', name = 'pH (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
+
 ```
 
 #### Sulfatos
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$sulphates, main='sulphates', type = 'box', name = 'Sulfatos')
+find_outlier_values(wines_dt.white_wines$sulphates)
+removed_sulphates_outliers <- remove_outliers(wines_dt.white_wines$sulphates)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$sulphates, main='sulphates', type = 'box', name = 'Sulfatos')
+without_outliers <- plot_ly(y=removed_sulphates_outliers, main='sulphates', type = 'box', name = 'Sulfatos (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 #### Álcool
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$alcohol, main='alcohol', type = 'box', name = 'Álcool')
+find_outlier_values(wines_dt.white_wines$alcohol)
+removed_alcohol_outliers <- remove_outliers(wines_dt.white_wines$alcohol)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$alcohol, main='alcohol', type = 'box', name = 'Álcool')
+without_outliers <- plot_ly(y=removed_alcohol_outliers, main='alcohol', type = 'box', name = 'Álcool (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
 ## Variância
