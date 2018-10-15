@@ -59,6 +59,15 @@ remove_outliers <- function(field, na.rm = TRUE, ...) {
   y
 }
 
+count_outliers_removed <- function(field){
+  removed <- as.integer(sum(is.na(field)))
+  total <- as.integer(count(as.data.frame(field)))
+  remaining <- total - removed
+  sprintf('Registros removidos: %d Registros dataset original: %d Registros depois remoção de outliers: %d', removed, total,remaining)
+
+  c(total, removed, remaining)
+}
+
 ```
 
 #### Acidez Fixa
@@ -67,25 +76,48 @@ remove_outliers <- function(field, na.rm = TRUE, ...) {
 
 removed_fixedacidity_outliers <- remove_outliers(wines_dt.white_wines$fixedacidity)
 find_outlier_values(wines_dt.white_wines$fixedacidity)
+registers <- count_outliers_removed(removed_fixedacidity_outliers)
 
 with_outliers <- plot_ly(y=wines_dt.white_wines$fixedacidity, main='fixedacidity', type = 'box', name = 'Acidez Fixa')
 without_outliers <- plot_ly(y=removed_fixedacidity_outliers, main='fixedacidity', type = 'box', name = 'Acidez Fixa (sem outliers)')
 
+without_outliers
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+```
+
+```{r}
+registers <- count_outliers_removed(removed_fixedacidity_outliers)
+print('----- Acidez Fixa -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 #### Volatilidade do Ácido
 
 ```{r}
-plot_ly(y=wines_dt.white_wines$volatileacidity, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido')
+removed_volatileacidity_outliers <- remove_outliers(wines_dt.white_wines$volatileacidity)
+find_outlier_values(wines_dt.white_wines$volatileacidity)
+
+with_outliers <- plot_ly(y=wines_dt.white_wines$volatileacidity, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido')
+without_outliers <- plot_ly(y=removed_citricacid_outliers, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido (Sem outliers)')
+
+comparing_plots <- subplot(with_outliers,without_outliers)
+comparing_plots
 ```
 
+```{r}
+registers <- count_outliers_removed(removed_volatileacidity_outliers)
+print('----- Volatilidade do Ácido -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
+```
 
 #### Ácido Cítrico
 
 ```{r}
-
 removed_citricacid_outliers <- remove_outliers(wines_dt.white_wines$citricacid)
 find_outlier_values(wines_dt.white_wines$citricacid)
 
@@ -94,6 +126,14 @@ without_outliers <- plot_ly(y=removed_citricacid_outliers, main='citricacid', ty
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+```
+
+```{r}
+registers <- count_outliers_removed(removed_citricacid_outliers)
+print('----- Ácido Cítrico -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 #### Açúcar Residual
@@ -107,7 +147,14 @@ without_outliers <- plot_ly(y=removed_residualsugar_outliers, main='residualsuga
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+```
 
+```{r}
+registers <- count_outliers_removed(removed_residualsugar_outliers)
+print('----- Açúcar Residual -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 #### Cloretos
@@ -121,6 +168,16 @@ without_outliers <- plot_ly(y=removed_chlorides_outliers, main='chlorides', type
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+
+```
+
+
+```{r}
+registers <- count_outliers_removed(removed_chlorides_outliers)
+print('----- Cloretos -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 #### Dióxido de Enxofre Livre
@@ -137,6 +194,14 @@ comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
 ```
 
+```{r}
+registers <- count_outliers_removed(removed_freesulfurdioxide_outliers)
+print('----- Dióxido de Enxofre Livre -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
+```
+
 #### Total de Dióxido de Enxofre
 
 ```{r}
@@ -148,6 +213,14 @@ without_outliers <- plot_ly(y=removed_totalsulfurdioxide_outliers, main='totalsu
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+```
+
+```{r}
+registers <- count_outliers_removed(removed_totalsulfurdioxide_outliers)
+print('----- Total de Dióxido de Enxofre -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 #### Densidade
@@ -163,6 +236,14 @@ comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
 ```
 
+```{r}
+registers <- count_outliers_removed(removed_density_outliers)
+print('----- Densidade -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
+```
+
 #### pH
 
 ```{r}
@@ -174,7 +255,14 @@ without_outliers <- plot_ly(y=removed_pH_outliers, main='pH', type = 'box', name
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+```
 
+```{r}
+registers <- count_outliers_removed(removed_pH_outliers)
+print('----- pH -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 #### Sulfatos
@@ -190,6 +278,14 @@ comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
 ```
 
+```{r}
+registers <- count_outliers_removed(removed_sulphates_outliers)
+print('----- Sulfatos -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
+```
+
 #### Álcool
 
 ```{r}
@@ -201,6 +297,14 @@ without_outliers <- plot_ly(y=removed_alcohol_outliers, main='alcohol', type = '
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
+```
+
+```{r}
+registers <- count_outliers_removed(removed_alcohol_outliers)
+print('----- Álcool -----')
+sprintf('Total registros (antes de remoção dos outliers): %d', registers[1])
+sprintf('Total registros removidos: %d', registers[2])
+sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
 ## Variância
