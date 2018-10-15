@@ -1,0 +1,158 @@
+---
+title: "TrabalhoFinal_Algoritmos"
+output: html_document
+---
+
+```{r 1}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Instalacao dos pacotes
+
+Instale os pacotes para poder realizar a analise descritiva:
+
+```{r 2}
+#install.packages('dplyr')
+#install.packages('plotly')
+#install.packages('gmodels')
+#install.packages('corrgram')
+#install.packages('rpart.plot')
+
+
+```
+
+## Carregar bibliotecas
+
+```{r 3}
+library(plotly)
+library(dplyr)
+library(gmodels)
+#library(corrgram)
+library(rpart.plot)
+
+
+```
+
+## Tratando o dataset
+
+Primeiramente, precisamos carregar nosso conjunto de dados.
+```{r 4}
+wines_dt <- read.csv2("wines.csv", row.names=1)
+```
+
+
+Filtrar o dataset considernado apenas os vinhos brancos.
+```{r 5}
+wines_dt %>%
+    filter(Vinho == 'WHITE') ->  white_wines_dt
+```
+
+
+Agrupar Quality em nom(10-8), regular(7-5) e ruim(5-0).
+```{r 6}
+  white_wines_dt$GroupQuality[white_wines_dt$quality < 6 ] = "Ruim"
+  white_wines_dt$GroupQuality[white_wines_dt$quality >= 6 ] = "Regular"
+  white_wines_dt$GroupQuality[white_wines_dt$quality >=8 ] = "Bom"
+  white_wines_dt$GroupQuality = white_wines_dt$GroupQuality #as.factor(white_wines_dt$GroupQuality)
+  summary(white_wines_dt)
+  white_wines_dt %>%
+    filter(GroupQuality == "Bom") ->  white_wines_dt_test
+  white_wines_dt_test <- rbind(white_wines_dt_test, head(filter(white_wines_dt, GroupQuality == "Ruim") , n=180))
+  
+```
+
+
+criar segundo  dataset considernado apenas os vinhos brancos  com notas boas e ruins, deixando de considerar as notas regulares, utilizaremos este dataset para comparar o resultado do dataset completo
+```{r 7}
+white_wines_dt %>%
+    filter(GroupQuality != "Regular") ->  white_wines_dt2
+summary(white_wines_dt2)
+
+
+```
+
+
+
+## Correla??o
+Correla??o das vari?veis base de vinhos brancos
+```{r 8}
+corrgram(white_wines_dt, order=TRUE, lower.panel=panel.shade,
+  upper.panel=panel.pie)
+
+```
+
+
+Correla??o das vari?veis base de vinhos brancos, excluindo os vinhos regulares
+```{r 9}
+corrgram(white_wines_dt2, order=TRUE, lower.panel=panel.shade,
+  upper.panel=panel.pie)
+
+```
+
+
+
+## Modelo1: Regress?o Linear
+Modelo considerando base completa de vinhos Brancos
+```{r 10}
+RegressaoLinear_1 = lm(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt)
+summary(RegressaoLinear_1)
+```
+
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular'
+```{r 11}
+RegressaoLinear_2 = lm(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt2)
+summary(RegressaoLinear_2)
+plot(RegressaoLinear_2)
+```
+
+
+
+## Modelo2: ?rvore de Regress?o
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+
+A obten??o de ?rvores de regress?o usando o R ? feita atrav?s da fun??o
+rpart, tal como nas ?rvores de decis?o. Assim, esta fun??o vai obter uma
+?rvore de regress?o ou de decis?o consoante o tipo da vari?vel objectivo. Se
+esta for um factor, a fun??o obt?m uma ?rvore de decis?o, se for uma vari?vel
+num?rica ? obtida uma ?rvore de regress?o. De resto toda a sintaxe ? igual
+
+claramento podemos observar o peso da variavel alcool, sendo a primiera linha de separa??o do modelo.
+para a arvore de regress?o utilizamos a quality.
+```{r 13}
+ArvoreRegressao_2 = rpart(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol,data = white_wines_dt_test)
+ArvoreRegressao_2
+rpart.plot(ArvoreRegressao_2, digits = 9, fallen.leaves = TRUE)
+
+```
+
+
+
+
+## Modelo 3:  ?rvore de Decis?o
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+
+Uma ?rvore de decis?o ? formada por um conjunto de n?s de decis?o,
+perguntas, que permitem a classifica??o de cada caso. Uma ?rvore de decis?o
+consiste numa hierarquia de testes a algumas das vari?veis envolvidas no
+problema de decis?o. A ?rvore pode ser lida a partir do teste encontrado na
+parte superior da mesma, normalmente chamado n? raiz da ?rvore. 
+
+```{r 14}
+ArvoreRegressao_2 = rpart(GroupQuality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol,data = white_wines_dt_test)
+ArvoreRegressao_2
+rpart.plot(ArvoreRegressao_2, digits = 9, fallen.leaves = TRUE)
+
+```
+
+
+
+## Modelo 4:  Regress?o Log?stica 
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+
+```{r 15}
+RegressaoLogistica = glm(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt_test)
+summary(RegressaoLogistica)
+plot(RegressaoLogistica)
+
+```
