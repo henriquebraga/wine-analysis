@@ -101,7 +101,7 @@ removed_volatileacidity_outliers <- remove_outliers(wines_dt.white_wines$volatil
 find_outlier_values(wines_dt.white_wines$volatileacidity)
 
 with_outliers <- plot_ly(y=wines_dt.white_wines$volatileacidity, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido')
-without_outliers <- plot_ly(y=removed_citricacid_outliers, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido (Sem outliers)')
+without_outliers <- plot_ly(y=removed_volatileacidity_outliers, main='volatileacidity', type = 'box', name = 'Volatilidade do Ácido (Sem outliers)')
 
 comparing_plots <- subplot(with_outliers,without_outliers)
 comparing_plots
@@ -307,6 +307,7 @@ sprintf('Total registros removidos: %d', registers[2])
 sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
+O campo `álcool` não ṕossui outliers. O campo que houve a maior presença de outliers foi o `ácido cítrico`.
 ## Variância
 
 ## PCA
