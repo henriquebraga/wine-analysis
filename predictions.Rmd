@@ -49,13 +49,16 @@ wines_dt %>%
 ```
 
 
-## Classificando a qualidade
+## Transformação de qualidade em variável categórica
 
 Decidimos por classificar a nota da qualidade inicialmente em três grupos:
-
 * Ruim: 0 ~ 5.99
 * Regular: 6 ~ 7.99
 * Bom: >= 8
+
+Neste caso, poderíamos utilizar algoritmos supervisionados como o K-means pra predizer em qual categoria um vinho se encontra.
+
+Porém, consideramos que isso não faria sentido para rodar os modelos não supervisionados.
 
 ```{r 6}
   white_wines_dt$GroupQuality[white_wines_dt$quality < 6 ] = "Ruim"
@@ -69,7 +72,6 @@ Decidimos por classificar a nota da qualidade inicialmente em três grupos:
   
 ```
 
-Para melhorar os resultados dos modelos de predição, consideramos apenas as notas boas e ruins e ignoramos as regulares.
 
 ```{r 7}
 white_wines_dt %>%
@@ -191,8 +193,6 @@ head(actuals_preds)
 
 É muito similar a árvore de decisão que será explicada a seguir, 
 
-Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
-
 A obtenção de árvores de regressão usando o R é feita por meio da função
 rpart, tal como nas árvores de decisão. 
 Com isso, esta função vai obter uma
@@ -277,8 +277,6 @@ Podemos definir a estrutura da árvore da seguinte forma:
 * Ramo: Valor do atributo
 * Folha: Classificação
 
-Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
-
 ### Separando dataset para treino e teste
 
 ```{r 19}
@@ -320,8 +318,6 @@ Este tipo de modelo lida muito bem com variáveis de entrada (independentes) de 
 Podemos dizer de modo geral que funciona como uma regressão linear, com exceção de que as variáveis dependentes devem ser categóricas e utiliza o método de máxima verossimilhança, ao invés dos mínimos quadrados como na regressão linear.
 
 Como vimos, nosso dataset possui apenas dados numéricos, com exceção do tipo de vinho.
-
-Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
 
 ### Separando dataset para treino e teste
 
@@ -375,4 +371,3 @@ em categórica para qualidade do vinho) e aplicar o `K-Means` para nos classific
 qualidade boa ou ruim.
 
 * Poderíamos também aplicar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest
-
