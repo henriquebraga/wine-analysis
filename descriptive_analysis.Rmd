@@ -296,6 +296,7 @@ showDispersion(wines_dt$quality, 'qualidade')
 ```{r standard_deviation}
 sd(wines_dt$quality)
 ```
+### Conclusão
 
 Concluimos que não há muito sentido continuar a análise tratando as duas categorias de vinho da mesma forma.
 
