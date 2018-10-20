@@ -317,7 +317,7 @@ quanto uma variável aumenta ou diminui conforme o mesmo ocorre com a outra.
 
 Diminuindo a dimensionalidade, há menos relações entre as variáveis para se considerar e a chance de "overfitar" seu modelo é menor.
 
-Em termos simples: geramos novas variáveis a partir das variáveis independentes (em nosso caso, todas as variáveis numéricas exceto `quality`,  que é a variável que estamos querendo explicar), contudo,  mantendo as informações mais importantes de cada variável em nosso modelo. 
+Em termos simples: geramos novas variáveis a partir das variáveis independentes (em nosso caso, todas as variáveis numéricas exceto `quality`,  que é a variável que estamos querendo explicar), contudo,  mantendo as informações mais importantes de cada variável em nosso modelo.
 
 Com isso, não perdemos as informações das variáveis do dataset de vinhos.
 
@@ -330,3 +330,15 @@ print(wines_dt.white_wines.pca)
 ```{r plot_pca}
 plot(wines_dt.white_wines.pca, type = "l")
 ```
+
+Conforme podemos observar, as três variáveis que mais influenciam no PC1 (componente primário) foram:
+
+* `Densidade` (0.503);
+* `Álcool` (-0.443);
+* `Açúcar Residual` (0.404);
+
+Conforme podemos observar, as três variáveis que mais influenciam no PC2 (componente secundário) foram:
+
+* `pH` (-0.567);
+* `Ácidez Fixa` (-0.560);
+* `Dióxido de Enxofre Livre` (0.345)
