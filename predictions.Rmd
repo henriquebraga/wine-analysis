@@ -1,0 +1,371 @@
+---
+title: "TrabalhoFinal_Algoritmos"
+output: html_document
+---
+
+```{r 1}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instalacao dos pacotes
+
+Instale os pacotes para realizar as predições.
+
+```{r 2}
+install.packages('dplyr')
+install.packages('plotly')
+install.packages('gmodels')
+install.packages('corrgram')
+install.packages('rpart.plot')
+install.packages("caTools")
+install.packages('caret', dependencies = TRUE)
+```
+
+## Carregar bibliotecas
+
+```{r 3}
+library(plotly)
+library(dplyr)
+library(gmodels)
+library(corrgram)
+library(rpart.plot)
+library(caTools)
+library(caret)
+```
+
+## Tratando o dataset
+
+Primeiramente, precisamos carregar nosso conjunto de dados.
+```{r 4}
+wines_dt <- read.csv2("wines.csv", row.names=1)
+```
+
+## Obtendo vinhos brancos
+
+Filtrar o dataset considernado apenas os vinhos brancos.
+```{r 5}
+wines_dt %>%
+    filter(Vinho == 'WHITE') ->  white_wines_dt
+```
+
+
+## Classificando a qualidade
+
+Decidimos por classificar a nota da qualidade inicialmente em três grupos:
+
+* Ruim: 0 ~ 5.99
+* Regular: 6 ~ 7.99
+* Bom: >= 8
+
+```{r 6}
+  white_wines_dt$GroupQuality[white_wines_dt$quality < 6 ] = "Ruim"
+  white_wines_dt$GroupQuality[white_wines_dt$quality >= 6 ] = "Regular"
+  white_wines_dt$GroupQuality[white_wines_dt$quality >=8 ] = "Bom"
+  white_wines_dt$GroupQuality = white_wines_dt$GroupQuality #as.factor(white_wines_dt$GroupQuality)
+  summary(white_wines_dt)
+  white_wines_dt %>%
+    filter(GroupQuality == "Bom") ->  white_wines_dt_test
+  white_wines_dt_test <- rbind(white_wines_dt_test, head(filter(white_wines_dt, GroupQuality == "Ruim") , n=180))
+  
+```
+
+Para melhorar os resultados dos modelos de predição, consideramos apenas as notas boas e ruins e ignoramos as regulares.
+
+```{r 7}
+white_wines_dt %>%
+    filter(GroupQuality != "Regular") ->  white_wines_dt2
+summary(white_wines_dt2)
+```
+
+## Correlações
+
+### Correlação das variáveis base de vinhos brancos
+
+```{r 8}
+corrgram(white_wines_dt, order=TRUE, lower.panel=panel.shade,
+  upper.panel=panel.pie)
+
+```
+
+
+### Correlação das variáveis base de vinhos brancos, excluindo os vinhos regulares
+
+```{r 9}
+corrgram(white_wines_dt2, order=TRUE, lower.panel=panel.shade,
+  upper.panel=panel.pie)
+```
+
+## Modelo 1: Regressão Linear
+
+### Técnica
+
+Trata-se de um modelo matemático. Os dados devem mostrar uma tendência linear para se obter bons resultados.
+
+A fórmula se dá por:
+
+`Y1 = B0 + B1 + B1Xi + Ei para i = 1..n`
+
+onde:
+
+Yi: nossa variável dependente (a que queremos explicar)
+Xi: variável independente (a que nos explica)
+B0, B1: Parâmetros do modelo (definem a reta). Também conhecido como intercepto/coeficiente linear ("em que momento corta o eixo Y quando x for 0?")
+n: tamanho da amostra
+
+(Baseado em: http://www.portalaction.com.br/analise-de-regressao/11-modelo-estatistico)
+
+### Modelo considerando base completa de vinhos Brancos
+
+Para rodar este modelo, decidimos criar a variável `qualityGroup`, sendo qualquer `quality` com valor maior ou superior a 6 é classificado como vinho "BOM". A variável `qualityGroup` será nossa variável dependente no caso.
+
+```{r 10}
+white_wines_dt$qualityGroup<- as.factor(ifelse(white_wines_dt$quality > 6,1,0))
+
+set.seed(1)
+```
+
+### Separando o dataset em treinamento/teste
+
+```{r 11}
+
+data_split <- sample.split(white_wines_dt$qualityGroup, SplitRatio = 0.8)
+white_wines_dt_train <- subset(white_wines_dt, data_split == TRUE)
+white_wines_dt_test <- subset(white_wines_dt, data_split == FALSE)
+```
+
+### Criando modelo de regressão linear com todas as variáveis
+
+```{r 12}
+lm_Quality = lm(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt_train)
+summary(lm_Quality)
+```
+
+### Análise da Qualidade do Modelo (Matriz de Confusão)
+
+Vamos ver como o modelo se comporta utiliza todas as variáveis.
+
+```{r 13}
+prediction_lm <- predict.lm(lm_Quality, newdata = white_wines_dt_test, type = 'response')
+prediction_lm_values <- as.factor(ifelse(prediction_lm > 6,1,0))
+confusionMatrix(prediction_lm_values, white_wines_dt_test$qualityGroup)
+```
+
+Vemos que o modelo teve uma acurácia de aproximadamente `68%`. Isto porque as variáveis não possuem forte correlação, o que dificulta a realização de bons resultados utilizando a regressão linear.
+
+Agora, vamos tentar diminuir o número de variáveis independentes de nosso modelo, selecionando a que possui maior correlação com qualidade do vinho branco (como observamos no arquivo `descriptive_analysis_red_wines_x_white_wines`, a variável que possui maior correlação (ainda sim baixa) com `quality` é `alcohol`), a fim de tentar aumentar a porcentagem de acertos em nosso modelo.
+
+```{r 14}
+lm_Quality_with_alcohol = lm(quality ~ alcohol, data=white_wines_dt_train)
+summary(lm_Quality)
+```
+
+```{r 15}
+prediction_lm_alcohol <- predict.lm(lm_Quality_with_alcohol, newdata = white_wines_dt_test, type = 'response')
+prediction_lm_alcohol_values <- as.factor(ifelse(prediction_lm_alcohol > 6,1,0))
+confusionMatrix(prediction_lm_alcohol_values, white_wines_dt_test$qualityGroup)
+```
+
+Utilizando a variável `alcohol`, tivemos um ganho de aproximadamente 2% (`70,5%` de acurácia) de acerto, pois conforme mencionado, esta variável possui uma correlação linear mais forte.
+
+
+Um exemplo onde uma regressão linear se encaixaria melhor, seria tentarmos explicar a variável `açúcar residual` (dependente) com a variável `densidade` (independente). Como elas possuem uma correlação linear mais forte, é provável que a porcentagem de acerto também seja maior.
+
+
+Vamos criar um novo modelo abaixo:
+```{r linear_regression_example}
+set.seed(1)
+lm_sugar_with_density = lm(residualsugar ~ density, data=white_wines_dt_train)
+summary(lm_sugar_with_density)
+
+prediction_lm_sugar <- predict.lm(lm_sugar_with_density, newdata = white_wines_dt_test)
+
+
+actuals_preds <- data.frame(cbind(actuals=white_wines_dt_test$residualsugar, predicteds=prediction_lm_sugar))
+cor(actuals_preds)
+head(actuals_preds)
+```
+
+## Modelo 2: Árvore de Regressão
+
+### Técnica
+
+É muito similar a árvore de decisão que será explicada a seguir, 
+
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+
+A obtenção de árvores de regressão usando o R é feita por meio da função
+rpart, tal como nas árvores de decisão. 
+Com isso, esta função vai obter uma
+árvore de regressão ou de decisão consoante o tipo da variável objectivo. Se
+esta for um factor, a função obtém uma árvore de decisão, se for uma variável
+numárica é obtida uma árvore de regressão. De resto toda a sintaxe é igual
+
+### Separando dataset para treino e teste
+
+```{r 16}
+set.seed(1)
+white_wines_dt$qualityGroup<- as.factor(ifelse(white_wines_dt$quality > 6,1,0))
+
+data_split <- sample.split(white_wines_dt$qualityGroup, SplitRatio = 0.8)
+white_wines_dt_train <- subset(white_wines_dt, data_split == TRUE)
+white_wines_dt_test <- subset(white_wines_dt, data_split == FALSE)
+```
+
+### Criando modelo Árvore de Regressão com todas as variáveis (quality: variável principal)
+
+Neste modelo, temos como variável dependente o campo `quality` e independente todo o restante de variáveis.
+
+```{r 17}
+rpart_Quality = rpart(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt_train)
+summary(rpart_Quality)
+rpart.plot(rpart_Quality, digits = 9, fallen.leaves = TRUE)
+```
+
+### Análise da Qualidade do Modelo (Matriz de Confusão)
+
+```{r 18}
+prediction_rpart <- predict(rpart_Quality, newdata = white_wines_dt_test)
+prediction_rpart_values <- as.factor(ifelse(prediction_rpart > 6,1,0))
+confusionMatrix(prediction_rpart_values, white_wines_dt_test$qualityGroup)
+```
+
+Neste modelo, temos uma acurácia melhor que a regressão linear (cerca de `71,5%`).
+
+Podemos também observar que a variável álcool possui um maior peso, estando no nó mais superior da árvore.
+
+
+## Modelo 3: Árvore de Decisão
+
+### Técnica
+
+É muito utilizada para aprendizagem indutiva e é extremamente prática.
+
+O conhecimento da Árvore de Decisão será baseado em uma estrutura de árvore para assim podermos realizar decisão. Porém, caso não queira representar em estruturá de árvores, pode ser facilmente representada por regras "se/então". Pode-se utilizar tanto em problemas supervisionados quanto não supervisionados.
+
+A árvore decisão também consegue descobrir quais são os atributos de maior importância para predição formando uma estrutura de nós. 
+
+A base é a mesma da árvore de regressão.
+
+Classe de algoritmos de aprendizado baseado na árvore de decisão: ID3("top-down"), C4.5 etc.
+
+É importante ressaltar que uanto menor a árvore, melhor será a indução. Isso basicamente quer dizer que: caso fique grande, pode cair num problema de overfitting ("100% de acerto").
+
+Outra coisa que precisa-se lembrar em uma Árvore de Decisão é a entropia, a qual diz o quanto um conjunto de dados aleatório está "impuro".
+E sempre varia entre 0 e 1, de acordo com a proporção de +/- no conjunto. Vale lembrar que a entropia é importante para o cálculo de ganho de informação para a árvore.
+
+A entropia (binária) é dada pela seguinte fórmula:
+
+`Entropia(S) = -p(+) log2p(+) - p(-) log2p(-)`
+
+onde:
+
+S: coleção S contendo exemplos
+p(+): proporção de exemplos positivos em S;
+p(-): proporção de exemplos negativos em S
+
+
+Se generalizarmos a entropia para multiclasses (ou seja, poder ser N valores e não mais 0 e 1), a entropia (S) é dada por:
+
+`Entropia(S) = Somatório(i=1) - pi * log2 * pi`
+
+onde:
+
+pi: proporção da coleção S pertencendo a classe i
+Podemos definir a estrutura da árvore da seguinte forma: 
+
+* Nó: testa atributo
+* Ramo: Valor do atributo
+* Folha: Classificação
+
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+
+### Separando dataset para treino e teste
+
+```{r 19}
+white_wines_dt$qualityGroup<- as.factor(ifelse(white_wines_dt$quality > 6,1,0))
+
+set.seed(1)
+
+data_split <- sample.split(white_wines_dt$qualityGroup, SplitRatio = 0.8)
+white_wines_dt_train <- subset(white_wines_dt, data_split == TRUE)
+white_wines_dt_test <- subset(white_wines_dt, data_split == FALSE)
+```
+
+### Criando modelo Árvore de Decisão (Variável Principal: qualityGroup)
+
+```{r 20}
+rpart_qualityGroup = rpart(qualityGroup ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt_train)
+summary(rpart_qualityGroup)
+rpart.plot(rpart_qualityGroup, digits = 9, fallen.leaves = TRUE)
+```
+
+### Análise da Qualidade do Modelo
+
+```{r 21}
+prediction_rpart <- as.data.frame(predict(rpart_qualityGroup, newdata = white_wines_dt_test))
+prediction_rpart$factor <- as.factor(ifelse(prediction_rpart[["1"]] > prediction_rpart[["0"]],1,0))
+confusionMatrix(prediction_rpart$factor, white_wines_dt_test$qualityGroup)
+```
+
+A árvore de decisão de longe foi o modelo com melhor desempenho (aproximadamente `81%` e acurácia), pois a mesma sabe dizer quais são as variáveis que possuem maior importância em nosso dataset.
+
+## Modelo 4:  Regressão Logística
+
+### Técnica
+
+A regressão logística é um modelo no qual classificamos na qual a variável dependente possuem valores binários (intervalos entre 0 e 1), ou seja, um ou o outro e as independentes podem ser categóricas ou não.
+
+Este tipo de modelo lida muito bem com variáveis de entrada (independentes) de tipo categórica e possui um grau relativamente alto de confiabilidade.
+
+Podemos dizer de modo geral que funciona como uma regressão linear, com exceção de que as variáveis dependentes devem ser categóricas e utiliza o método de máxima verossimilhança, ao invés dos mínimos quadrados como na regressão linear.
+
+Como vimos, nosso dataset possui apenas dados numéricos, com exceção do tipo de vinho.
+
+Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+
+### Separando dataset para treino e teste
+
+```{r 22}
+
+white_wines_dt$qualityGroup<- as.factor(ifelse(white_wines_dt$quality > 6,'1','0'))
+
+set.seed(1)
+data_split <- sample.split(white_wines_dt$qualityGroup, SplitRatio = 0.8)
+white_wines_dt_train <- subset(white_wines_dt, data_split == TRUE)
+white_wines_dt_test <- subset(white_wines_dt, data_split == FALSE)
+
+head(white_wines_dt, n=10)
+```
+
+### Criando modelo Árvore de Regressão Logística com todas as variáveis (quality: variável principal)
+
+```{r 23}
+glm_Quality = glm(quality ~ fixedacidity+volatileacidity+citricacid+residualsugar+chlorides+freesulfurdioxide+totalsulfurdioxide+density+pH+sulphates+alcohol, data=white_wines_dt_train)
+summary(glm_Quality)
+```
+
+### Análise da Qualidade do Modelo (Matriz de Confusão)
+
+```{r 24}
+prediction_glm <- predict.glm(glm_Quality, newdata = white_wines_dt_test, type = 'response')
+prediction_glm_values <- as.factor(ifelse(prediction_glm > 6,1,0))
+confusionMatrix(prediction_lm_values, white_wines_dt_test$qualityGroup)
+```
+
+Podemos verificar que na regressão logística a acurácia foi relativamente baixa (`68,5%` aproximadamente). Acreditamos que isso é porque a natureza de nosso problema envolve dados numéricos e a regressão logística se aplica melhor para casos em que se utilizam variáveis categóricas.
+
+## Conclusões
+
+Após rodar os quatro modelos propostos, observamos que:
+
+* A previsão da qualidade em si se tornou uma tarefa extremamente complexa, visto os dados que temos. Uma solução poderia ser buscar maneiras de enriquecer o dataset e rodar novamente os modelos;
+
+* Com isso, fomos obrigados a definir uma nova variável para determinar a qualidade do vinho entre `BOA` e `RUIM`, de acordo com a qualidade (visto que é uma variável contínua);
+
+* Feito isso, rodamos os modelos novamente;
+
+* Mesmo com essas otimizações, somente a árvore de decisão teve um porcentagem de assertividade razoável (`80%` aproximadamente). Isso porque a árvore de decisão soube definir os atributos que foram mais importantes no conjunto de dados;
+
+* Já na regressão/árvore de regressão e regresso logística, a porcentagem de acertos na previsão não foi muito boa, visto que as correlações lineares existentes entre as variáveis dependente (qualidade) e independente (todo o resto) não foram fortes positivamente/negativamente.
+
+* Por estes motivos, recomendamos a utilização do modelo da Árvore de Decisão.
