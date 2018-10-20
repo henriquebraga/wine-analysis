@@ -307,8 +307,16 @@ sprintf('Total registros removidos: %d', registers[2])
 sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 ```
 
-O campo `álcool` não ṕossui outliers. O campo que houve a maior presença de outliers foi o `ácido cítrico`.
-## Variância
+O campo `álcool` não possui outliers. O campo que houve a maior presença de outliers foi o `ácido cítrico`.
 
 ## PCA
 
+```{r pca}
+pca_cols <- wines_dt.white_wines[1:11]
+wines_dt.white_wines.pca <- prcomp(pca_cols, center = TRUE, scale. = TRUE)
+print(wines_dt.white_wines.pca)
+```
+
+```{r plot_pca}
+plot(wines_dt.white_wines.pca, type = "l")
+```
