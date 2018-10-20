@@ -191,14 +191,12 @@ head(actuals_preds)
 
 ### Técnica
 
-É muito similar a árvore de decisão que será explicada a seguir, 
+É muito similar a árvore de decisão que será explicada a seguir, pois segue a mesma ideia: um conjunto de nós de DECISÃO/PERGUNTAS partindo de exemplos.
+
+A única diferença é que a resposta é um número ao invés de uma categoria.
 
 A obtenção de árvores de regressão usando o R é feita por meio da função
 rpart, tal como nas árvores de decisão. 
-Com isso, esta função vai obter uma
-árvore de regressão ou de decisão consoante o tipo da variável objectivo. Se
-esta for um factor, a função obtém uma árvore de decisão, se for uma variável
-numárica é obtida uma árvore de regressão. De resto toda a sintaxe é igual
 
 ### Separando dataset para treino e teste
 
@@ -362,12 +360,12 @@ Após rodar os quatro modelos propostos, observamos que:
 
 * Mesmo com essas otimizações, somente a árvore de decisão teve um porcentagem de assertividade razoável (`80%` aproximadamente). Isso porque a árvore de decisão soube definir os atributos que foram mais importantes no conjunto de dados;
 
-* Já na regressão/árvore de regressão e regresso logística, a porcentagem de acertos na previsão não foi muito boa, visto que as correlações lineares existentes entre as variáveis dependente (qualidade) e independente (todo o resto) não foram fortes positivamente/negativamente.
+* Já na regressão/árvore de regressão e regresso logística, a porcentagem de acertos na previsão não foi muito boa, visto que as correlações lineares existentes entre as variáveis dependente (qualidade) e independente (todo o resto) não foram fortes positivamente/negativamente;
 
-* Por estes motivos, recomendamos a utilização do modelo da Árvore de Decisão.
+* Por estes motivos, recomendamos a utilização do modelo da Árvore de Decisão;
 
 * Poderíamos transformar em um problema categórico (similar ao que fizemos de transformar uma variável numérica
 em categórica para qualidade do vinho) e aplicar o `K-Means` para nos classificar se um vinho terá uma 
-qualidade boa ou ruim.
+qualidade boa ou ruim. Poderíamos aplicar a própria `Árvore de Decisão` para o mesmo problema, pois a mesma também funciona com problemas supervisionados;
 
-* Poderíamos também aplicar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest
+* Poderíamos também aplicar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest.
