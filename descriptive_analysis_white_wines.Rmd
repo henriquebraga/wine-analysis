@@ -15,7 +15,6 @@ install.packages('plotly')
 ```{r load_libraries}
 library(plotly)
 library(dplyr)
-
 ```
 
 ## Carregar o dataset
@@ -310,6 +309,12 @@ sprintf('Total registros (depois remoção de outliers): %d', registers[3])
 O campo `álcool` não possui outliers. O campo que houve a maior presença de outliers foi o `ácido cítrico`.
 
 ## PCA
+
+A ideia principal do PCA é reduzir a dimensionalidade de muitas variáveis 
+correlacionadas entre si por meio de combinações lineares entre as mesmas. 
+
+Lembrando que `dimensionalidade` diz respeito à quantidade de colunas no dataset de vinhos e `correlação` diz respeito à
+quanto uma variável aumenta ou diminui conforme o mesmo ocorre com a outra.
 
 ```{r pca}
 pca_cols <- wines_dt.white_wines[1:11]
