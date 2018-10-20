@@ -370,8 +370,8 @@ Após rodar os quatro modelos propostos, observamos que:
 
 * Por estes motivos, recomendamos a utilização do modelo da Árvore de Decisão.
 
-* Poderíamos usar algumas outras estratégias de modelos supervionados como transformar o problema em um problema categórico (similar ao que fizemos de transformar uma variável numérica
-em categórica para qualidade do vinho) e aplicar o `K-Means` para nos classificar se um vinho terá uma 
-qualidade boa ou ruim. Poderíamos também aplicar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest, que encontria a melhor opção possível de árvore de decisão para o problema, visto que a árvore de decisão foi o modelo que obteve o melhor resultado, evitando ainda a questão do overfit. Ou utilizar um modelo de Support Vector Machine, ainda utilizando apenas os dados rótulos com qualidade `BOA` e `RUIM`, por ser muito utilizado para classificações binárias obtendo normalmente um resultado eficaz.
+* Poderíamos usar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest, que encontria a melhor opção possível de árvore de decisão para o problema, visto que a árvore de decisão foi o modelo que obteve o melhor resultado, evitando ainda a questão do overfit. Ou utilizar um modelo de Support Vector Machine, ainda utilizando apenas os dados rótulos com qualidade `BOA` e `RUIM`, por ser muito utilizado para classificações binárias obtendo normalmente um resultado eficaz.
 
-* Como opçoes de modelos não supervisionados poderíamos utilizar 
+* Como opção de modelo não supervisionado poderíamos utilizar como transformar o problema em um problema categórico (similar ao que fizemos de transformar uma variável numérica
+em categórica para qualidade do vinho) e aplicar o `K-Means` para nos classificar se um vinho terá uma 
+qualidade boa ou ruim.
