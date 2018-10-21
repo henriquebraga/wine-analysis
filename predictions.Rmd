@@ -49,13 +49,16 @@ wines_dt %>%
 ```
 
 
-## Classificando a qualidade
+## Transformação de qualidade em variável categórica
 
 Decidimos por classificar a nota da qualidade inicialmente em três grupos:
-
 * Ruim: 0 ~ 5.99
 * Regular: 6 ~ 7.99
 * Bom: >= 8
+
+Neste caso, poderíamos utilizar algoritmos supervisionados como o K-means pra predizer em qual categoria um vinho se encontra.
+
+Porém, consideramos que isso não faria sentido para rodar os modelos não supervisionados.
 
 ```{r 6}
   white_wines_dt$GroupQuality[white_wines_dt$quality < 6 ] = "Ruim"
@@ -69,7 +72,6 @@ Decidimos por classificar a nota da qualidade inicialmente em três grupos:
   
 ```
 
-Para melhorar os resultados dos modelos de predição, consideramos apenas as notas boas e ruins e ignoramos as regulares.
 
 ```{r 7}
 white_wines_dt %>%
@@ -189,16 +191,12 @@ head(actuals_preds)
 
 ### Técnica
 
-É muito similar a árvore de decisão que será explicada a seguir, 
+É muito similar a árvore de decisão que será explicada a seguir, pois segue a mesma ideia: um conjunto de nós de DECISÃO/PERGUNTAS partindo de exemplos.
 
-Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
+A única diferença é que a resposta é um número ao invés de uma categoria.
 
 A obtenção de árvores de regressão usando o R é feita por meio da função
 rpart, tal como nas árvores de decisão. 
-Com isso, esta função vai obter uma
-árvore de regressão ou de decisão consoante o tipo da variável objectivo. Se
-esta for um factor, a função obtém uma árvore de decisão, se for uma variável
-numárica é obtida uma árvore de regressão. De resto toda a sintaxe é igual
 
 ### Separando dataset para treino e teste
 
@@ -277,8 +275,6 @@ Podemos definir a estrutura da árvore da seguinte forma:
 * Ramo: Valor do atributo
 * Folha: Classificação
 
-Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
-
 ### Separando dataset para treino e teste
 
 ```{r 19}
@@ -320,8 +316,6 @@ Este tipo de modelo lida muito bem com variáveis de entrada (independentes) de 
 Podemos dizer de modo geral que funciona como uma regressão linear, com exceção de que as variáveis dependentes devem ser categóricas e utiliza o método de máxima verossimilhança, ao invés dos mínimos quadrados como na regressão linear.
 
 Como vimos, nosso dataset possui apenas dados numéricos, com exceção do tipo de vinho.
-
-Modelo considerando base de vinhos Brancos, excluindo as notas 'Regular' e utilizando amostra reduzida de 180 vinhos bons e 180 vinhos ruins.
 
 ### Separando dataset para treino e teste
 
@@ -366,12 +360,15 @@ Após rodar os quatro modelos propostos, observamos que:
 
 * Mesmo com essas otimizações, somente a árvore de decisão teve um porcentagem de assertividade razoável (`80%` aproximadamente). Isso porque a árvore de decisão soube definir os atributos que foram mais importantes no conjunto de dados;
 
-* Já na regressão/árvore de regressão e regresso logística, a porcentagem de acertos na previsão não foi muito boa, visto que as correlações lineares existentes entre as variáveis dependente (qualidade) e independente (todo o resto) não foram fortes positivamente/negativamente.
+* Já na regressão/árvore de regressão e regresso logística, a porcentagem de acertos na previsão não foi muito boa, visto que as correlações lineares existentes entre as variáveis dependente (qualidade) e independente (todo o resto) não foram fortes positivamente/negativamente;
 
-* Por estes motivos, recomendamos a utilização do modelo da Árvore de Decisão.
+* Por estes motivos, recomendamos a utilização do modelo da Árvore de Decisão;
 
-* Poderíamos usar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest, que encontria a melhor opção possível de árvore de decisão para o problema, visto que a árvore de decisão foi o modelo que obteve o melhor resultado, evitando ainda a questão do overfit. Ou utilizar um modelo de Support Vector Machine, ainda utilizando apenas os dados rótulos com qualidade `BOA` e `RUIM`, por ser muito utilizado para classificações binárias obtendo normalmente um resultado eficaz.
+* Poderíamos usar outros modelos a fim de tentar melhorar o score de predição tais como Random Forest, que encontraria a melhor opção possível de árvore de decisão para o problema, visto que a árvore de decisão foi o modelo que obteve o melhor resultado, evitando ainda a questão do overfit. Ou utilizar um modelo de Support Vector Machine, ainda utilizando apenas os dados rótulos com qualidade `BOA` e `RUIM`, por ser muito utilizado para classificações binárias obtendo normalmente um resultado eficaz.
 
 * Como opção de modelo não supervisionado poderíamos utilizar como transformar o problema em um problema categórico (similar ao que fizemos de transformar uma variável numérica
 em categórica para qualidade do vinho) e aplicar o `K-Means` para nos classificar se um vinho terá uma 
-qualidade boa ou ruim.
+qualidade boa ou ruim. Poderíamos aplicar a própria `Árvore de Decisão` para o mesmo problema, pois a mesma também funciona com problemas supervisionados;
+
+
+
